@@ -1,0 +1,94 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+   <!-- CREATE TABLE department-->
+    <changeSet id="create-department" author="sara">
+        <sqlFile path="ddl/create-department.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <!-- CREATE TABLE subject-->
+    <changeSet id="create-subject" author="sara">
+        <sqlFile path="ddl/create-subject.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <!-- CREATE TABLE create-academic-title-->
+    <changeSet id="create-academic-title" author="sara">
+        <sqlFile path="ddl/create-academic-title-codebook.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <!-- CREATE TABLE education-title-->
+    <changeSet id="create-education-title" author="sara">
+        <sqlFile path="ddl/create-education-title-codebook.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <!-- CREATE TABLE scientific-field-->
+    <changeSet id="create-scientific-field" author="sara">
+        <sqlFile path="ddl/create-scientific-field-codebook.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <!-- CREATE TABLE member-->
+    <changeSet id="create-member" author="sara">
+        <sqlFile path="ddl/create-member.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <!-- CREATE TABLE academic title history-->
+    <changeSet id="create-academic-title-history" author="sara">
+        <sqlFile path="ddl/create-academic-title-history.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <!-- CREATE TABLE management of department history-->
+    <changeSet id="create-management-of-department-history" author="sara">
+        <sqlFile path="ddl/create-management-of-department-history.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////-->
+
+
+
+    <!-- FILL TABLE academic title codebook -->
+    <changeSet id="init-academic-title-codebook" author="sara">
+        <sqlFile path="dml/init-academic-title-codebook.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <!-- FILL TABLE education title codebook -->
+    <changeSet id="init-education-title-codebook" author="sara">
+        <sqlFile path="dml/init-education-title-codebook.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <!-- FILL TABLE scientific field codebook-->
+    <changeSet id="init-scientific-field-codebook" author="sara">
+        <sqlFile path="dml/init-scientific-field-codebook.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+
+
+    <!-- FILL TABLE department -->
+    <changeSet id="init-department" author="sara">
+        <sqlFile path="dml/init-department.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <!-- FILL TABLE subject -->
+    <changeSet id="init-subject" author="sara">
+        <sqlFile path="dml/init-subject.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <!-- FILL TABLE member -->
+    <changeSet id="init-member" author="sara">
+        <sqlFile path="dml/init-member.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <!-- FILL TABLE academic title history -->
+    <changeSet id="init-academic-title-history" author="sara">
+        <sqlFile path="dml/init-academic-title-history.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <!-- FILL TABLE management of department history -->
+    <changeSet id="init-management-of-department-history" author="sara">
+        <sqlFile path="dml/init-management-of-department-history.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+
+
+</databaseChangeLog>
