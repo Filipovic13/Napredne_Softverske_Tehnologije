@@ -83,6 +83,8 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
 
             entity.setSupervisorFirstName(newSupervisor.getFirstName());
             entity.setSupervisorLastName(newSupervisor.getLastName());
+            entity.setSecretaryFirstName(newSecretary.getFirstName());
+            entity.setSecretaryLastName(newSecretary.getLastName());
             entity.setDepartment(depDB.get());
 
             return managementHistoryRepository.save(entity);
