@@ -20,4 +20,5 @@ public interface MemberService {
     Member updateDepartment(Long memberId, String departmentName) throws Exception;
 
     Member findById(Long id) throws Exception;
+
 }
