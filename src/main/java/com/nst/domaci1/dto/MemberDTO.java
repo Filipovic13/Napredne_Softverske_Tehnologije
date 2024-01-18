@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 public class MemberDTO implements Serializable {
 
+    private Long id;
     @NotNull
     private String firstName;
 
@@ -26,8 +27,8 @@ public class MemberDTO implements Serializable {
     public MemberDTO() {
     }
 
-
-    public MemberDTO(String firstName, String lastName, ManagerRole managerRole, AcademicTitleDTO academicTitle, EducationTitleDTO educationTitle, ScientificFieldDTO scientificField, DepartmentDTO departmentDTO) {
+    public MemberDTO(Long id, String firstName, String lastName, ManagerRole managerRole, AcademicTitleDTO academicTitle, EducationTitleDTO educationTitle, ScientificFieldDTO scientificField, DepartmentDTO departmentDTO) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.managerRole = managerRole;
@@ -35,6 +36,14 @@ public class MemberDTO implements Serializable {
         this.educationTitle = educationTitle;
         this.scientificField = scientificField;
         this.departmentDTO = departmentDTO;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -51,6 +60,14 @@ public class MemberDTO implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public ManagerRole getManagerRole() {
+        return managerRole;
+    }
+
+    public void setManagerRole(ManagerRole managerRole) {
+        this.managerRole = managerRole;
     }
 
     public AcademicTitleDTO getAcademicTitle() {
@@ -83,13 +100,5 @@ public class MemberDTO implements Serializable {
 
     public void setDepartmentDTO(DepartmentDTO departmentDTO) {
         this.departmentDTO = departmentDTO;
-    }
-
-    public ManagerRole getManagerRole() {
-        return managerRole;
-    }
-
-    public void setManagerRole(ManagerRole managerRole) {
-        this.managerRole = managerRole;
     }
 }

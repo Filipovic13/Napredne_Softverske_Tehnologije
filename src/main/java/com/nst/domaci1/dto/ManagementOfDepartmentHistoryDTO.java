@@ -1,12 +1,15 @@
 package com.nst.domaci1.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.nst.domaci1.domain.ManagerRole;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
 public class ManagementOfDepartmentHistoryDTO implements Serializable {
+
+    private Long id;
 
     @NotNull(message = "Start date must be entered!")
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -16,25 +19,30 @@ public class ManagementOfDepartmentHistoryDTO implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
-    private String supervisorFirstName;
-    private String supervisorLastName;
+    private ManagerRole managerRole;
 
-    private String secretaryFirstName;
-    private String secretaryLastName;
+    private MemberDTO memberDTO;
 
     private DepartmentDTO departmentDTO;
 
     public ManagementOfDepartmentHistoryDTO() {
     }
 
-    public ManagementOfDepartmentHistoryDTO(LocalDate startDate, LocalDate endDate, String supervisorFirstName, String supervisorLastName, String secretaryFirstName, String secretaryLastName, DepartmentDTO departmentDTO) {
+    public ManagementOfDepartmentHistoryDTO(Long id, LocalDate startDate, LocalDate endDate, ManagerRole managerRole, MemberDTO memberDTO, DepartmentDTO departmentDTO) {
+        this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.supervisorFirstName = supervisorFirstName;
-        this.supervisorLastName = supervisorLastName;
-        this.secretaryFirstName = secretaryFirstName;
-        this.secretaryLastName = secretaryLastName;
+        this.managerRole = managerRole;
+        this.memberDTO = memberDTO;
         this.departmentDTO = departmentDTO;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDate getStartDate() {
@@ -53,36 +61,20 @@ public class ManagementOfDepartmentHistoryDTO implements Serializable {
         this.endDate = endDate;
     }
 
-    public String getSupervisorFirstName() {
-        return supervisorFirstName;
+    public ManagerRole getManagerRole() {
+        return managerRole;
     }
 
-    public void setSupervisorFirstName(String supervisorFirstName) {
-        this.supervisorFirstName = supervisorFirstName;
+    public void setManagerRole(ManagerRole managerRole) {
+        this.managerRole = managerRole;
     }
 
-    public String getSupervisorLastName() {
-        return supervisorLastName;
+    public MemberDTO getMemberDTO() {
+        return memberDTO;
     }
 
-    public void setSupervisorLastName(String supervisorLastName) {
-        this.supervisorLastName = supervisorLastName;
-    }
-
-    public String getSecretaryFirstName() {
-        return secretaryFirstName;
-    }
-
-    public void setSecretaryFirstName(String secretaryFirstName) {
-        this.secretaryFirstName = secretaryFirstName;
-    }
-
-    public String getSecretaryLastName() {
-        return secretaryLastName;
-    }
-
-    public void setSecretaryLastName(String secretaryLastName) {
-        this.secretaryLastName = secretaryLastName;
+    public void setMemberDTO(MemberDTO memberDTO) {
+        this.memberDTO = memberDTO;
     }
 
     public DepartmentDTO getDepartmentDTO() {

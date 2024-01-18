@@ -1,17 +1,20 @@
 package com.nst.domaci1.repository;
 
+import com.nst.domaci1.domain.Department;
 import com.nst.domaci1.domain.ManagementOfDepartmentHistory;
-import com.nst.domaci1.domain.ManagementOfDepartmentHistoryID;
+import com.nst.domaci1.domain.ManagerRole;
+import com.nst.domaci1.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface ManagementOfDepartmentHistoryRepository extends JpaRepository<ManagementOfDepartmentHistory, ManagementOfDepartmentHistoryID> {
+public interface ManagementOfDepartmentHistoryRepository extends JpaRepository<ManagementOfDepartmentHistory, Long> {
 
-    Optional<ManagementOfDepartmentHistory> findFirstByDepartmentNameOrderByStartDateDesc(String departmentName);
+    List<ManagementOfDepartmentHistory> findByDepartmentOrderByStartDateDesc(Department department);
 
-    List<ManagementOfDepartmentHistory> findByDepartmentName(String departmentName);
+    Optional<ManagementOfDepartmentHistory> findFirstByDepartmentAndManagerRoleOrderByStartDateDesc(Department department, ManagerRole managerRole);
+
+    List<ManagementOfDepartmentHistory> findByMemberAndDepartmentOrderByStartDateDesc(Member member, Department department);
 
 }

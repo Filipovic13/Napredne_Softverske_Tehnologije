@@ -1,15 +1,16 @@
 package com.nst.domaci1.domain;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @Table
-@IdClass(AcademicTitleHistoryID.class)
 public class AcademicTitleHistory {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Temporal(TemporalType.DATE)
     private LocalDate startDate;
 
@@ -24,24 +25,29 @@ public class AcademicTitleHistory {
     @JoinColumn(name = "scientific_field_code", referencedColumnName = "code")
     private ScientificField scientificField;
 
-    @Id
     @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "member_first_name", referencedColumnName = "first_name"),
-            @JoinColumn(name = "member_last_name", referencedColumnName = "last_name")
-    })
+    @JoinColumn(name = "member_id", referencedColumnName = "id")
     private Member member;
 
 
     public AcademicTitleHistory() {
     }
 
-    public AcademicTitleHistory(LocalDate startDate, LocalDate endDate, AcademicTitle academicTitle, ScientificField scientificField, Member member) {
+    public AcademicTitleHistory(Long id, LocalDate startDate, LocalDate endDate, AcademicTitle academicTitle, ScientificField scientificField, Member member) {
+        this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.academicTitle = academicTitle;
         this.scientificField = scientificField;
         this.member = member;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDate getStartDate() {

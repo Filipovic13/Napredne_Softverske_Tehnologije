@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface AcademicTitleHistoryRepository extends JpaRepository<AcademicTitleHistory, AcademicTitleHistoryID> {
+public interface AcademicTitleHistoryRepository extends JpaRepository<AcademicTitleHistory, Long> {
 
-    List<AcademicTitleHistory> findAllByMemberFirstNameAndMemberLastName(String firstName,String lastName);
+    List<AcademicTitleHistory> findAllByMemberId(Long memberId);
 
-    Optional<AcademicTitleHistory> findFirstByMemberFirstNameAndMemberLastNameOrderByStartDateDesc(String firstName, String lastName);
+    Optional<AcademicTitleHistory> findFirstByMemberIdOrderByStartDateDesc(Long memberId);
 }

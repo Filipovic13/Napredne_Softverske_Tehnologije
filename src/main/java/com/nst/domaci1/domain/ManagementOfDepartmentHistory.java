@@ -5,24 +5,25 @@ import java.time.LocalDate;
 
 @Entity
 @Table
-@IdClass(ManagementOfDepartmentHistoryID.class)
 public class ManagementOfDepartmentHistory {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Temporal(TemporalType.DATE)
     private LocalDate startDate;
 
     @Temporal(TemporalType.DATE)
     private LocalDate endDate;
 
-    private String supervisorFirstName;
-    private String supervisorLastName;
+    @Enumerated(EnumType.STRING)
+    private ManagerRole managerRole;
 
-    private String secretaryFirstName;
-    private String secretaryLastName;
+    @ManyToOne
+    @JoinColumn(name = "member_id", referencedColumnName = "id")
+    private Member member;
 
-
-    @Id
     @ManyToOne
     @JoinColumn(name = "department_name", referencedColumnName = "name")
     private Department department;
@@ -31,14 +32,21 @@ public class ManagementOfDepartmentHistory {
 
     }
 
-    public ManagementOfDepartmentHistory(LocalDate startDate, LocalDate endDate, String supervisorFirstName, String supervisorLastName, String secretaryFirstName, String secretaryLastName, Department department) {
+    public ManagementOfDepartmentHistory(Long id, LocalDate startDate, LocalDate endDate, ManagerRole managerRole, Member member, Department department) {
+        this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.supervisorFirstName = supervisorFirstName;
-        this.supervisorLastName = supervisorLastName;
-        this.secretaryFirstName = secretaryFirstName;
-        this.secretaryLastName = secretaryLastName;
+        this.managerRole = managerRole;
+        this.member = member;
         this.department = department;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDate getStartDate() {
@@ -57,36 +65,20 @@ public class ManagementOfDepartmentHistory {
         this.endDate = endDate;
     }
 
-    public String getSupervisorFirstName() {
-        return supervisorFirstName;
+    public ManagerRole getManagerRole() {
+        return managerRole;
     }
 
-    public void setSupervisorFirstName(String supervisorFirstName) {
-        this.supervisorFirstName = supervisorFirstName;
+    public void setManagerRole(ManagerRole managerRole) {
+        this.managerRole = managerRole;
     }
 
-    public String getSupervisorLastName() {
-        return supervisorLastName;
+    public Member getMember() {
+        return member;
     }
 
-    public void setSupervisorLastName(String supervisorLastName) {
-        this.supervisorLastName = supervisorLastName;
-    }
-
-    public String getSecretaryFirstName() {
-        return secretaryFirstName;
-    }
-
-    public void setSecretaryFirstName(String secretaryFirstName) {
-        this.secretaryFirstName = secretaryFirstName;
-    }
-
-    public String getSecretaryLastName() {
-        return secretaryLastName;
-    }
-
-    public void setSecretaryLastName(String secretaryLastName) {
-        this.secretaryLastName = secretaryLastName;
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     public Department getDepartment() {

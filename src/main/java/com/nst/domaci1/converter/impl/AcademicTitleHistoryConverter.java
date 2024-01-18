@@ -21,6 +21,7 @@ public class AcademicTitleHistoryConverter implements DtoEntityConverter<Academi
     @Override
     public AcademicTitleHistoryDTO toDTO(AcademicTitleHistory titleHistory) {
         return new AcademicTitleHistoryDTO(
+                titleHistory.getId(),
                 titleHistory.getStartDate(),
                 titleHistory.getEndDate(),
                 academicTitleConverter.toDTO(titleHistory.getAcademicTitle()),
@@ -31,6 +32,7 @@ public class AcademicTitleHistoryConverter implements DtoEntityConverter<Academi
     @Override
     public AcademicTitleHistory toEntity(AcademicTitleHistoryDTO dto) {
         return new AcademicTitleHistory(
+                dto.getId(),
                 dto.getStartDate(),
                 dto.getEndDate(),
                 academicTitleConverter.toEntity(dto.getAcademicTitle()),

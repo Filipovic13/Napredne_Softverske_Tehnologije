@@ -2,7 +2,6 @@ package com.nst.domaci1.controller;
 
 import com.nst.domaci1.converter.impl.MemberConverter;
 import com.nst.domaci1.domain.Member;
-import com.nst.domaci1.domain.MemberID;
 import com.nst.domaci1.dto.MemberDTO;
 import com.nst.domaci1.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -68,12 +67,11 @@ public class MemberController {
     }
 
 
-    @Operation(summary = "DELETE Member by it's firstname and lastname")
-    @DeleteMapping("/{firstName}/{lastName}")
-    public ResponseEntity<String> delete(@PathVariable String firstName, @PathVariable String lastName) {
-        MemberID memberID = new  MemberID(firstName, lastName);
+    @Operation(summary = "DELETE Member by it's ID")
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<String> delete(@PathVariable Long memberId) {
         try {
-            memberService.delete(memberID);
+            memberService.delete(memberId);
             return new ResponseEntity<>("Member successfully removed!", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);
@@ -81,10 +79,10 @@ public class MemberController {
     }
 
     @Operation(summary = "UPDATE Member's fields regarding science")
-    @PatchMapping("/{firstName}/{lastName}/{academicTitle}/{educationTitle}/{scienceField}")
-    public ResponseEntity<?> updateScienceFields(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String academicTitle, @PathVariable String educationTitle, String scienceField) throws Exception {
+    @PatchMapping("/{memberId}/{academicTitle}/{educationTitle}/{scienceField}")
+    public ResponseEntity<?> updateScienceFields(@PathVariable Long memberId, @PathVariable String academicTitle, @PathVariable String educationTitle, String scienceField) throws Exception {
         try {
-            Member member = memberService.updateScienceFields(firstName, lastName, academicTitle, educationTitle, scienceField);
+            Member member = memberService.updateScienceFields(memberId, academicTitle, educationTitle, scienceField);
             return new ResponseEntity<>(memberConverter.toDTO(member), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -93,10 +91,10 @@ public class MemberController {
     }
 
     @Operation(summary = "UPDATE Member's department to which belongs")
-    @PatchMapping("/{firstName}/{lastName}/{departmentName}")
-    public ResponseEntity<?> updateDepartment(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String departmentName) throws Exception {
+    @PatchMapping("/{memberId}/{departmentName}")
+    public ResponseEntity<?> updateDepartment(@PathVariable Long memberId, @PathVariable String departmentName) throws Exception {
         try {
-            Member member = memberService.updateDepartment(firstName, lastName, departmentName);
+            Member member = memberService.updateDepartment(memberId, departmentName);
             return new ResponseEntity<>(memberConverter.toDTO(member), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -104,12 +102,11 @@ public class MemberController {
 
     }
 
-    @Operation(summary = "GET Member by it's firstname and lastname")
-    @GetMapping("/{firstName}/{lastName}")
-    public ResponseEntity<?> findById(@PathVariable String firstName, @PathVariable String lastName) {
-        MemberID memberID = new MemberID(firstName, lastName);
+    @Operation(summary = "GET Member by it's ID")
+    @GetMapping("/{memberId}")
+    public ResponseEntity<?> findById(@PathVariable Long memberId) {
         try {
-            MemberDTO memDTO =  memberConverter.toDTO(memberService.findById(memberID));
+            MemberDTO memDTO =  memberConverter.toDTO(memberService.findById(memberId));
             return new ResponseEntity<>(memDTO, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);

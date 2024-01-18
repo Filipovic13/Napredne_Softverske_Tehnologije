@@ -39,14 +39,13 @@ public class AcademicTitleHistoryServiceImpl implements AcademicTitleHistoryServ
     }
 
     @Override
-    public List<AcademicTitleHistory> findAllByMember(String firstName, String lastName) throws Exception {
-        MemberID memberID = new MemberID(firstName, lastName);
+    public List<AcademicTitleHistory> findAllByMemberId(Long memberId) throws Exception {
 
-        Optional<Member> memberDB = memberRepository.findById(memberID);
+        Optional<Member> memberDB = memberRepository.findById(memberId);
         if (memberDB.isEmpty()){
             throw new Exception("Member with the given firstname and lastname doesn't exist in database!");
         }
 
-        return academicTitleHistoryRepository.findAllByMemberFirstNameAndMemberLastName(firstName, lastName);
+        return academicTitleHistoryRepository.findAllByMemberId(memberId);
     }
 }

@@ -51,7 +51,7 @@ public class MemberServiceImpl implements MemberService {
 
 
         if (!member.getManagerRole().toString().equalsIgnoreCase("NONE")){
-            throw new Exception("When adding new member, manager role MUST BE set to NONE.\nManager role of supervisor or secretary can only be set through Management Of Department History");
+            throw new Exception("When adding new member, manager role MUST BE set to NONE.");
         }
 
         Optional<Department> depDB = departmentRepository.findById(member.getDepartment().getName());
@@ -66,7 +66,7 @@ public class MemberServiceImpl implements MemberService {
         member.setDepartment(depDB.get());
         Member savedMember =  memberRepository.save(member);
 
-        academicTitleHistoryRepository.save(new AcademicTitleHistory(LocalDate.now(), null, academicTitleDB.get(), scientificFieldDB.get(), savedMember));
+        academicTitleHistoryRepository.save(new AcademicTitleHistory(null, LocalDate.now(), null, academicTitleDB.get(), scientificFieldDB.get(), savedMember));
 
         return savedMember;
     }
@@ -83,30 +83,29 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public void delete(MemberID id) throws Exception {
+    public void delete(Long id) throws Exception {
         Optional<Member> memDB = memberRepository.findById(id);
         if (memDB.isPresent()) {
             if (memDB.get().getManagerRole() == ManagerRole.SUPERVISOR || memDB.get().getManagerRole() == ManagerRole.SECRETARY){
-                throw new Exception("You can not delete Supervisor or Secretary!\nFirst change member's role through Management of Department, then delete a member.");
+                throw new Exception("You can not delete Supervisor or Secretary!\nFirst change member's role, then delete a member.");
             }
 
-            List<AcademicTitleHistory> academicTitleHistories = academicTitleHistoryRepository.findAllByMemberFirstNameAndMemberLastName(id.getFirstName(), id.getLastName());
+            List<AcademicTitleHistory> academicTitleHistories = academicTitleHistoryRepository.findAllByMemberId(id);
             for (AcademicTitleHistory history : academicTitleHistories) {
                 academicTitleHistoryRepository.delete(history);
             }
             memberRepository.deleteById(id);
         } else {
-            throw new Exception("Member with the given name doesn't exist!");
+            throw new Exception("Member with the given ID doesn't exist!");
         }
 
     }
 
     @Override
     @Transactional
-    public Member updateScienceFields(String firstName, String lastName, String academicTitle, String educationTitle, String scienceField) throws Exception {
-        MemberID memberID = new MemberID(firstName, lastName);
+    public Member updateScienceFields(Long memberId, String academicTitle, String educationTitle, String scienceField) throws Exception {
 
-        Optional<Member> memDB = memberRepository.findById(memberID);
+        Optional<Member> memDB = memberRepository.findById(memberId);
         if (memDB.isEmpty()){
             throw new Exception("Member with entered firstname and lastname doesn't exist!");
         }
@@ -126,7 +125,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // new academic title can't be the same as the previous - from Academic Title History
-        Optional<AcademicTitleHistory> lastTitleHistoryRecord = academicTitleHistoryRepository.findFirstByMemberFirstNameAndMemberLastNameOrderByStartDateDesc(firstName, lastName);
+        Optional<AcademicTitleHistory> lastTitleHistoryRecord = academicTitleHistoryRepository.findFirstByMemberIdOrderByStartDateDesc(memberId);
         if (lastTitleHistoryRecord.isPresent() && lastTitleHistoryRecord.get().getAcademicTitle().getAcademicTitleName().equals(academicTitle)){
             throw new Exception("Entered Academic Title name is already last title.\nPlease enter different Academic title name if you want to make changes!");
         }
@@ -153,19 +152,18 @@ public class MemberServiceImpl implements MemberService {
 
         Member savedMember = memberRepository.save(member);
 
-        academicTitleHistoryRepository.save(new AcademicTitleHistory(startDate, null, academicTitleDB.get(), scientificFieldDB.get(), savedMember));
+        academicTitleHistoryRepository.save(new AcademicTitleHistory(null, startDate, null, academicTitleDB.get(), scientificFieldDB.get(), savedMember));
 
         return savedMember;
     }
 
     @Override
     @Transactional
-    public Member updateDepartment(String firstName, String lastName, String departmentName) throws Exception {
+    public Member updateDepartment(Long memberId, String departmentName) throws Exception {
 
-        MemberID memberID = new MemberID(firstName, lastName);
-        Optional<Member> memDB = memberRepository.findById(memberID);
+        Optional<Member> memDB = memberRepository.findById(memberId);
         if (memDB.isEmpty()){
-            throw new Exception("Member with the given firstname and lastname doesn't exist!");
+            throw new Exception("Member with the given ID doesn't exist!");
         }
 
         Optional<Department> depDB = departmentRepository.findById(departmentName);
@@ -180,7 +178,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findById(MemberID id) throws Exception {
+    public Member findById(Long id) throws Exception {
         Optional<Member> memDB = memberRepository.findById(id);
         if (memDB.isPresent()) {
             return memDB.get();

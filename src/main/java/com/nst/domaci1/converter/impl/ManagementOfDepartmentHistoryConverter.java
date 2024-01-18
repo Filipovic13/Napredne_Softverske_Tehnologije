@@ -19,24 +19,22 @@ public class ManagementOfDepartmentHistoryConverter implements DtoEntityConverte
     @Override
     public ManagementOfDepartmentHistoryDTO toDTO(ManagementOfDepartmentHistory managementHistory) {
         return new ManagementOfDepartmentHistoryDTO(
+                managementHistory.getId(),
                 managementHistory.getStartDate(),
                 managementHistory.getEndDate(),
-                managementHistory.getSupervisorFirstName(),
-                managementHistory.getSupervisorLastName(),
-                managementHistory.getSecretaryFirstName(),
-                managementHistory.getSecretaryLastName(),
+                managementHistory.getManagerRole(),
+                memberConverter.toDTO(managementHistory.getMember()),
                 departmentConverter.toDTO(managementHistory.getDepartment()));
     }
 
     @Override
     public ManagementOfDepartmentHistory toEntity(ManagementOfDepartmentHistoryDTO dto) {
         return new ManagementOfDepartmentHistory(
+                dto.getId(),
                 dto.getStartDate(),
                 dto.getEndDate(),
-                dto.getSupervisorFirstName(),
-                dto.getSupervisorLastName(),
-                dto.getSecretaryFirstName(),
-                dto.getSecretaryLastName(),
+                dto.getManagerRole(),
+                memberConverter.toEntity(dto.getMemberDTO()),
                 departmentConverter.toEntity(dto.getDepartmentDTO()));
     }
 }

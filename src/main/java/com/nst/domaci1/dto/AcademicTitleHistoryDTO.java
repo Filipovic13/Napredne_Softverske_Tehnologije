@@ -7,6 +7,8 @@ import java.time.LocalDate;
 
 public class AcademicTitleHistoryDTO implements Serializable {
 
+    private Long id;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
@@ -22,7 +24,8 @@ public class AcademicTitleHistoryDTO implements Serializable {
     public AcademicTitleHistoryDTO() {
     }
 
-    public AcademicTitleHistoryDTO(LocalDate startDate, LocalDate endDate, AcademicTitleDTO academicTitle, ScientificFieldDTO scientificField, MemberDTO memberDTO) {
+    public AcademicTitleHistoryDTO(Long id, LocalDate startDate, LocalDate endDate, AcademicTitleDTO academicTitle, ScientificFieldDTO scientificField, MemberDTO memberDTO) {
+        this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.academicTitle = academicTitle;
@@ -30,6 +33,13 @@ public class AcademicTitleHistoryDTO implements Serializable {
         this.memberDTO = memberDTO;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public LocalDate getStartDate() {
         return startDate;
@@ -70,5 +80,4 @@ public class AcademicTitleHistoryDTO implements Serializable {
     public void setMemberDTO(MemberDTO memberDTO) {
         this.memberDTO = memberDTO;
     }
-
 }

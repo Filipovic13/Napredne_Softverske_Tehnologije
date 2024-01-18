@@ -1,12 +1,9 @@
 package com.nst.domaci1.controller;
 
 import com.nst.domaci1.converter.impl.AcademicTitleHistoryConverter;
-import com.nst.domaci1.domain.AcademicTitleHistory;
-import com.nst.domaci1.domain.MemberID;
 import com.nst.domaci1.dto.AcademicTitleHistoryDTO;
 import com.nst.domaci1.service.AcademicTitleHistoryService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.transaction.NotSupportedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -57,12 +54,12 @@ public class AcademicTitleHistoryController {
     }
 
 
-    @Operation(summary = "GET ALL Academic Title Histories by Member (firstname and lastname)")
-    @GetMapping("/{firstName}/{lastName}")
-    public ResponseEntity<?>findAllByMember(@PathVariable String firstName, @PathVariable String lastName) {
+    @Operation(summary = "GET ALL Academic Title Histories by Member ID")
+    @GetMapping("/{memberId}")
+    public ResponseEntity<?>findAllByMember(@PathVariable Long memberId) {
         List<AcademicTitleHistoryDTO> titlesOfMember = null;
         try {
-            titlesOfMember = academicTitleHistoryConverter.entitiesToDTOs(academicTitleHistoryService.findAllByMember(firstName, lastName));
+            titlesOfMember = academicTitleHistoryConverter.entitiesToDTOs(academicTitleHistoryService.findAllByMemberId(memberId));
             return new ResponseEntity<>(titlesOfMember, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);

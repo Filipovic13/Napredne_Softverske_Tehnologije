@@ -23,6 +23,7 @@ public class MemberConverter implements DtoEntityConverter<MemberDTO, Member> {
     @Override
     public MemberDTO toDTO(Member member) {
         return new MemberDTO(
+                member.getId(),
                 member.getFirstName(),
                 member.getLastName(),
                 member.getManagerRole(),
@@ -35,6 +36,7 @@ public class MemberConverter implements DtoEntityConverter<MemberDTO, Member> {
     @Override
     public Member toEntity(MemberDTO dto) {
         return new Member(
+                dto.getId(),
                 dto.getFirstName(),
                 dto.getLastName(),
                 dto.getManagerRole(),
