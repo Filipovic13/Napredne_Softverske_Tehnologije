@@ -146,4 +146,15 @@ public class DepartmentController {
         }
     }
 
+    @Operation(summary = "GET latest Manager (Supervisor or Secretary) for Department")
+    @GetMapping("/latestManager/{departmentName}/{managerRole}")
+    public ResponseEntity<?> getLatestSupervisor(@PathVariable String departmentName, @PathVariable String managerRole) {
+        try {
+            ManagementOfDepartmentHistoryDTO mngmntDTO = managementOfDepartmentHistoryConverter.toDTO(managementOfDepartmentHistoryService.getLatestMangerOfDepartment(departmentName, managerRole));
+            return new ResponseEntity<>(mngmntDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

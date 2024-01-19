@@ -4,6 +4,7 @@ import com.nst.domaci1.domain.Department;
 import com.nst.domaci1.domain.ManagementOfDepartmentHistory;
 import com.nst.domaci1.domain.ManagerRole;
 import com.nst.domaci1.domain.Member;
+import com.nst.domaci1.dto.ManagementOfDepartmentHistoryDTO;
 import com.nst.domaci1.repository.DepartmentRepository;
 import com.nst.domaci1.repository.ManagementOfDepartmentHistoryRepository;
 import com.nst.domaci1.repository.MemberRepository;
@@ -141,5 +142,31 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
             throw new Exception("Management Of DepartmentHistory with the given ID doesn't exist!");
         }
     }
+
+    @Override
+    public ManagementOfDepartmentHistory getLatestMangerOfDepartment(String departmentName, String managerRole) throws Exception {
+        Optional<Department> depDb = departmentRepository.findById(departmentName);
+        if (depDb.isEmpty()){
+            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
+        }
+        Department department = depDb.get();
+
+        ManagerRole chosenRole;
+        if (managerRole.equalsIgnoreCase("supervisor")){
+            chosenRole = ManagerRole.SUPERVISOR;
+        } else if (managerRole.equalsIgnoreCase("secretary")) {
+            chosenRole = ManagerRole.SECRETARY;
+        }else {
+            throw new Exception("Role can only take values: Supervisor or Secretary!");
+        }
+
+        Optional<ManagementOfDepartmentHistory> lastManager = managementOfDepartmentHistoryRepository.findFirstByDepartmentAndManagerRoleOrderByStartDateDesc(department, chosenRole);
+        if (lastManager.isPresent()){
+            return lastManager.get();
+        }else {
+            throw new Exception("There is no " + chosenRole.toString() + " for department - " + departmentName);
+        }
+    }
+
 
 }

@@ -18,4 +18,7 @@ public interface ManagementOfDepartmentHistoryService {
 
     ManagementOfDepartmentHistory findByIdManagementOfDepartmentHistory(Long managementOfDepartmentHistoryId) throws Exception;
 
+    ManagementOfDepartmentHistory getLatestMangerOfDepartment(String departmentName, String managerRole) throws Exception;
+
+
 }
