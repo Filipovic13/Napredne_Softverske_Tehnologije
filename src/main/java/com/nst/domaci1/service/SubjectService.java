@@ -1,6 +1,7 @@
 package com.nst.domaci1.service;
 
 import com.nst.domaci1.domain.Subject;
+
 import java.util.List;
 
 public interface SubjectService {

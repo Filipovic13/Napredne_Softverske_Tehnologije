@@ -21,10 +21,10 @@ public class AcademicTitleServiceImpl implements AcademicTitleService {
     public AcademicTitle save(AcademicTitle academicTitle) throws Exception {
         Optional<AcademicTitle> acTitleCodeDB = academicTitleRepository.findById(academicTitle.getAcademicTitleCode());
         Optional<AcademicTitle> acTitleNameDB = academicTitleRepository.findByAcademicTitleName(academicTitle.getAcademicTitleName());
-        if (acTitleCodeDB.isPresent()){
+        if (acTitleCodeDB.isPresent()) {
             throw new Exception("Academic Title with this ID - code already exists!");
         }
-        if (acTitleNameDB.isPresent()){
+        if (acTitleNameDB.isPresent()) {
             throw new Exception("Academic Title with this name already exists!");
         }
         return academicTitleRepository.save(academicTitle);
@@ -38,7 +38,7 @@ public class AcademicTitleServiceImpl implements AcademicTitleService {
     @Override
     public void delete(String code) throws Exception {
         Optional<AcademicTitle> acTitleDB = academicTitleRepository.findById(code);
-        if (acTitleDB.isEmpty()){
+        if (acTitleDB.isEmpty()) {
             throw new Exception("Academic Title doesn't exist with the given ID - code");
         }
         academicTitleRepository.deleteById(code);
@@ -47,7 +47,7 @@ public class AcademicTitleServiceImpl implements AcademicTitleService {
     @Override
     public AcademicTitle findByName(String academicTitle) throws Exception {
         Optional<AcademicTitle> acTitleDB = academicTitleRepository.findByAcademicTitleName(academicTitle);
-        if (acTitleDB.isEmpty()){
+        if (acTitleDB.isEmpty()) {
             throw new Exception("Academic Title doesn't exist!");
         }
         return acTitleDB.get();

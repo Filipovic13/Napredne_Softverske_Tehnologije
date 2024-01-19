@@ -17,8 +17,6 @@ public class ScientificField {
     private String scientificFieldName;
 
 
-
-
     public ScientificField() {
 
     }

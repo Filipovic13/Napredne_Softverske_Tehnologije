@@ -9,7 +9,6 @@ import com.nst.domaci1.dto.ManagementOfDepartmentHistoryDTO;
 import com.nst.domaci1.service.DepartmentService;
 import com.nst.domaci1.service.ManagementOfDepartmentHistoryService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.transaction.NotSupportedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,10 +75,10 @@ public class DepartmentController {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
     @Operation(summary = "PATCH set Supervisor for Department")
     @PatchMapping("/supervisor/{memberId}/{departmentName}")
-    public ResponseEntity<?> setSupervisorForDepartment(@PathVariable Long memberId, String departmentName) {
+    public ResponseEntity<?> setSupervisorForDepartment(@PathVariable Long memberId, @PathVariable String departmentName) {
         try {
             ManagementOfDepartmentHistoryDTO mngmntDTO = managementOfDepartmentHistoryConverter.toDTO(managementOfDepartmentHistoryService.setSupervisorForDepartment(memberId, departmentName));
             return new ResponseEntity<>(mngmntDTO, HttpStatus.OK);
@@ -90,7 +89,7 @@ public class DepartmentController {
 
     @Operation(summary = "PATCH set Secretary for Department")
     @PatchMapping("/secretary/{memberId}/{departmentName}")
-    public ResponseEntity<?> setSecretaryForDepartment(@PathVariable Long memberId, String departmentName) {
+    public ResponseEntity<?> setSecretaryForDepartment(@PathVariable Long memberId, @PathVariable String departmentName) {
         try {
             ManagementOfDepartmentHistoryDTO mngmntDTO = managementOfDepartmentHistoryConverter.toDTO(managementOfDepartmentHistoryService.setSecretaryForDepartment(memberId, departmentName));
             return new ResponseEntity<>(mngmntDTO, HttpStatus.OK);
@@ -101,7 +100,7 @@ public class DepartmentController {
 
 
     @Operation(summary = "GET ALL Management of Department History that belong to certain department")
-    @GetMapping("managementHistoryByDepartment/{departmentName}")
+    @GetMapping("managementOfDepartmentHistory/byDepartment/{departmentName}")
     public ResponseEntity<?> findAllManagersByDepartmentName(@PathVariable String departmentName) {
         List<ManagementOfDepartmentHistory> historyList;
         try {
@@ -113,7 +112,7 @@ public class DepartmentController {
     }
 
     @Operation(summary = "GET ALL Management of Department History by Member and Department")
-    @GetMapping("/membersManagementHistory/{memberId}/{departmentName}")
+    @GetMapping("/managementOfDepartmentHistory/{memberId}/{departmentName}")
     public ResponseEntity<?> findManagementHistoryByMemberIdAndDepartmentName(@PathVariable Long memberId, @PathVariable String departmentName) {
         List<ManagementOfDepartmentHistory> historyList;
         try {
@@ -125,10 +124,10 @@ public class DepartmentController {
     }
 
     @Operation(summary = "DELETE Management Of Department History by ID")
-    @DeleteMapping("/managementHistory/{managementOfDepartmentHistoryId}")
-    public ResponseEntity<String> deleteManagementOfDepartmentHistory(@PathVariable Long managementOfDepartmentHistoryId) {
+    @DeleteMapping("/managementOfDepartmentHistory/{managementOfDepartmentHistoryId}")
+    public ResponseEntity<String> deleteByIdManagementOfDepartmentHistory(@PathVariable Long managementOfDepartmentHistoryId) {
         try {
-            managementOfDepartmentHistoryService.deleteManagementOfDepartmentHistory(managementOfDepartmentHistoryId);
+            managementOfDepartmentHistoryService.deleteByIdManagementOfDepartmentHistory(managementOfDepartmentHistoryId);
             return new ResponseEntity<>("Management Of Department History successfully removed!", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);
@@ -136,11 +135,11 @@ public class DepartmentController {
     }
 
     @Operation(summary = "GET Management Of Department History by ID")
-    @GetMapping("/managementHistory/{managementOfDepartmentHistoryId}")
-    public ResponseEntity<?> findManagementOfDepartmentHistoryById(@PathVariable Long managementOfDepartmentHistoryId) {
+    @GetMapping("/managementOfDepartmentHistory/{managementOfDepartmentHistoryId}")
+    public ResponseEntity<?> findByIdManagementOfDepartmentHistory(@PathVariable Long managementOfDepartmentHistoryId) {
         ManagementOfDepartmentHistory history;
         try {
-             history = managementOfDepartmentHistoryService.findByIdManagementOfDepartmentHistory(managementOfDepartmentHistoryId);
+            history = managementOfDepartmentHistoryService.findByIdManagementOfDepartmentHistory(managementOfDepartmentHistoryId);
             return new ResponseEntity<>(managementOfDepartmentHistoryConverter.toDTO(history), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);

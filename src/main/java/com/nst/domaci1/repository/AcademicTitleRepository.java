@@ -21,5 +21,4 @@ public interface AcademicTitleRepository extends JpaRepository<AcademicTitle, St
     void deleteByMember(String firstName, String lastName);
 
 
-
 }

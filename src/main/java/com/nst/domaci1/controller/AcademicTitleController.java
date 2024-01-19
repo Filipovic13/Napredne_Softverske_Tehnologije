@@ -25,39 +25,39 @@ public class AcademicTitleController {
 
     @Operation(summary = "SAVE new Academic Title")
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody AcademicTitleDTO academicTitleDTO){
+    public ResponseEntity<?> save(@RequestBody AcademicTitleDTO academicTitleDTO) {
         AcademicTitle at = academicTitleConverter.toEntity(academicTitleDTO);
         try {
             AcademicTitleDTO atDTO = academicTitleConverter.toDTO(academicTitleService.save(at));
-            return new ResponseEntity<>(atDTO, HttpStatus.CREATED) ;
+            return new ResponseEntity<>(atDTO, HttpStatus.CREATED);
         } catch (Exception e) {
-           return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.CONFLICT);
         }
 
     }
 
     @Operation(summary = "GET ALL Academic Titles")
     @GetMapping
-    public ResponseEntity<List<AcademicTitleDTO>> getAll(){
+    public ResponseEntity<List<AcademicTitleDTO>> getAll() {
         List<AcademicTitleDTO> list = academicTitleConverter.entitiesToDTOs(academicTitleService.getAll());
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @Operation(summary = "DELETE Academic Title by it's ID - code")
     @DeleteMapping("/{code}")
-    public ResponseEntity<String> delete(@PathVariable String code){
+    public ResponseEntity<String> delete(@PathVariable String code) {
         try {
             academicTitleService.delete(code);
             return new ResponseEntity<>("Academic Title successfully removed!", HttpStatus.OK);
         } catch (Exception e) {
-           return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
 
     @Operation(summary = "GET Academic Title by it's name")
     @GetMapping("/{academicTitle}")
-    public ResponseEntity<?> finfByName(@PathVariable String academicTitle){
+    public ResponseEntity<?> finfByName(@PathVariable String academicTitle) {
         try {
             AcademicTitleDTO acDTO = academicTitleConverter.toDTO(academicTitleService.findByName(academicTitle));
             return new ResponseEntity<>(acDTO, HttpStatus.OK);

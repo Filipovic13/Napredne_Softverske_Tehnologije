@@ -14,7 +14,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 
 
@@ -55,7 +57,7 @@ public class MemberController {
 
     @Operation(summary = "GET ALL Members - PAGEABLE")
     @GetMapping("/paging")
-    public ResponseEntity<Page<MemberDTO>> getAllByPageMembers(
+    public ResponseEntity<Page<MemberDTO>> getAllByPage(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "pageSize", defaultValue = "2") int pageSize,
             @RequestParam(name = "sortBy", defaultValue = "lastName") String sortBy,
@@ -91,7 +93,7 @@ public class MemberController {
         try {
             Member member = memberService.updateScienceFields(memberId, academicTitle, educationTitle, scienceField);
             return new ResponseEntity<>(memberConverter.toDTO(member), HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
 
@@ -103,7 +105,7 @@ public class MemberController {
         try {
             Member member = memberService.updateDepartment(memberId, departmentName);
             return new ResponseEntity<>(memberConverter.toDTO(member), HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
 
@@ -113,7 +115,7 @@ public class MemberController {
     @GetMapping("/{memberId}")
     public ResponseEntity<?> findById(@PathVariable Long memberId) {
         try {
-            MemberDTO memDTO =  memberConverter.toDTO(memberService.findById(memberId));
+            MemberDTO memDTO = memberConverter.toDTO(memberService.findById(memberId));
             return new ResponseEntity<>(memDTO, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);
@@ -131,16 +133,16 @@ public class MemberController {
 
     @Operation(summary = "GET ALL Academic Title History - PAGEABLE")
     @GetMapping("/academicTitles/paging")
-    public ResponseEntity<Page<AcademicTitleHistoryDTO>>getAllByPageAcademicTitleHistories(
+    public ResponseEntity<Page<AcademicTitleHistoryDTO>> getAllByPageAcademicTitleHistories(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "pageSize", defaultValue = "2") int pageSize,
             @RequestParam(name = "sortBy", defaultValue = "academicTitle") String academicTitle,
-            @RequestParam(name = "sortDirection", defaultValue = "asc") String sortDirection){
+            @RequestParam(name = "sortDirection", defaultValue = "asc") String sortDirection) {
 
         Pageable pageable;
-        if (sortDirection.equals("asc")){
+        if (sortDirection.equals("asc")) {
             pageable = PageRequest.of(page, pageSize, Sort.by(academicTitle).ascending());
-        }else {
+        } else {
             pageable = PageRequest.of(page, pageSize, Sort.by(academicTitle).descending());
         }
         Page<AcademicTitleHistoryDTO> academicTitleHistoriesDTOPage = academicTitleHistoryService.getALl(pageable).map(academicTitleHistoryConverter::toDTO);
@@ -151,7 +153,7 @@ public class MemberController {
 
     @Operation(summary = "GET ALL Academic Title Histories by Member ID")
     @GetMapping("/academicTitles/{memberId}")
-    public ResponseEntity<?>findAllAcademicTitleHistoriesByMember(@PathVariable Long memberId) {
+    public ResponseEntity<?> findAllAcademicTitleHistoriesByMember(@PathVariable Long memberId) {
         List<AcademicTitleHistoryDTO> titlesOfMember = null;
         try {
             titlesOfMember = academicTitleHistoryConverter.entitiesToDTOs(academicTitleHistoryService.findAllByMemberId(memberId));

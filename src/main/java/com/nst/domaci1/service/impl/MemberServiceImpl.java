@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -50,13 +51,13 @@ public class MemberServiceImpl implements MemberService {
         }
 
 
-        if (!member.getManagerRole().toString().equalsIgnoreCase("NONE")){
+        if (!member.getManagerRole().toString().equalsIgnoreCase("NONE")) {
             throw new Exception("When adding new member, manager role MUST BE set to NONE.");
         }
 
         Optional<Department> depDB = departmentRepository.findById(member.getDepartment().getName());
         if (depDB.isEmpty()) {
-            throw  new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
+            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
 
         member.setAcademicTitle(academicTitleDB.get());
@@ -64,7 +65,7 @@ public class MemberServiceImpl implements MemberService {
         member.setScientificField(scientificFieldDB.get());
 
         member.setDepartment(depDB.get());
-        Member savedMember =  memberRepository.save(member);
+        Member savedMember = memberRepository.save(member);
 
         academicTitleHistoryRepository.save(new AcademicTitleHistory(null, LocalDate.now(), null, academicTitleDB.get(), scientificFieldDB.get(), savedMember));
 
@@ -86,7 +87,7 @@ public class MemberServiceImpl implements MemberService {
     public void delete(Long id) throws Exception {
         Optional<Member> memDB = memberRepository.findById(id);
         if (memDB.isPresent()) {
-            if (memDB.get().getManagerRole() == ManagerRole.SUPERVISOR || memDB.get().getManagerRole() == ManagerRole.SECRETARY){
+            if (memDB.get().getManagerRole() == ManagerRole.SUPERVISOR || memDB.get().getManagerRole() == ManagerRole.SECRETARY) {
                 throw new Exception("You can not delete Supervisor or Secretary!\nFirst change member's role, then delete a member.");
             }
 
@@ -106,7 +107,7 @@ public class MemberServiceImpl implements MemberService {
     public Member updateScienceFields(Long memberId, String academicTitle, String educationTitle, String scienceField) throws Exception {
 
         Optional<Member> memDB = memberRepository.findById(memberId);
-        if (memDB.isEmpty()){
+        if (memDB.isEmpty()) {
             throw new Exception("Member with entered firstname and lastname doesn't exist!");
         }
 
@@ -126,23 +127,22 @@ public class MemberServiceImpl implements MemberService {
 
         // new academic title can't be the same as the previous - from Academic Title History
         Optional<AcademicTitleHistory> lastTitleHistoryRecord = academicTitleHistoryRepository.findFirstByMemberIdOrderByStartDateDesc(memberId);
-        if (lastTitleHistoryRecord.isPresent() && lastTitleHistoryRecord.get().getAcademicTitle().getAcademicTitleName().equals(academicTitle)){
+        if (lastTitleHistoryRecord.isPresent() && lastTitleHistoryRecord.get().getAcademicTitle().getAcademicTitleName().equals(academicTitle)) {
             throw new Exception("Entered Academic Title name is already last title.\nPlease enter different Academic title name if you want to make changes!");
         }
 
         // if last record exists set end date
-        if (lastTitleHistoryRecord.isPresent()){
+        if (lastTitleHistoryRecord.isPresent()) {
             lastTitleHistoryRecord.get().setEndDate(LocalDate.now());
             academicTitleHistoryRepository.save(lastTitleHistoryRecord.get());
         }
 
         LocalDate startDate;
-        if (lastTitleHistoryRecord.isPresent()  && lastTitleHistoryRecord.get().getStartDate().equals(LocalDate.now())){
+        if (lastTitleHistoryRecord.isPresent() && lastTitleHistoryRecord.get().getStartDate().equals(LocalDate.now())) {
             startDate = lastTitleHistoryRecord.get().getEndDate().plusDays(1);
-        }else {
+        } else {
             startDate = LocalDate.now();
         }
-
 
 
         Member member = memDB.get();
@@ -162,12 +162,12 @@ public class MemberServiceImpl implements MemberService {
     public Member updateDepartment(Long memberId, String departmentName) throws Exception {
 
         Optional<Member> memDB = memberRepository.findById(memberId);
-        if (memDB.isEmpty()){
+        if (memDB.isEmpty()) {
             throw new Exception("Member with the given ID doesn't exist!");
         }
 
         Optional<Department> depDB = departmentRepository.findById(departmentName);
-        if (depDB.isEmpty()){
+        if (depDB.isEmpty()) {
             throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
 
@@ -186,7 +186,6 @@ public class MemberServiceImpl implements MemberService {
             throw new Exception("Member with the given ID - name and lastname doesn't exist!");
         }
     }
-
 
 
 }

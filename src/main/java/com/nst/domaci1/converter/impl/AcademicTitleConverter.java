@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 public class AcademicTitleConverter implements DtoEntityConverter<AcademicTitleDTO, AcademicTitle> {
     @Override
     public AcademicTitleDTO toDTO(AcademicTitle academicTitle) {
-        return new AcademicTitleDTO(academicTitle.getAcademicTitleCode(),academicTitle.getAcademicTitleName());
+        return new AcademicTitleDTO(academicTitle.getAcademicTitleCode(), academicTitle.getAcademicTitleName());
     }
 
     @Override
     public AcademicTitle toEntity(AcademicTitleDTO academicTitleDTO) {
-        return new AcademicTitle(academicTitleDTO.getCode(),academicTitleDTO.getName());
+        return new AcademicTitle(academicTitleDTO.getCode(), academicTitleDTO.getName());
     }
 }

@@ -25,12 +25,12 @@ public class EducationTitleController {
 
     @Operation(summary = "SAVE new Education Title")
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody EducationTitleDTO educationTitleDTO){
+    public ResponseEntity<?> save(@RequestBody EducationTitleDTO educationTitleDTO) {
         EducationTitle et = educationTitleConverter.toEntity(educationTitleDTO);
         try {
             EducationTitleDTO etDTO = educationTitleConverter.toDTO(educationTitleService.save(et));
             return new ResponseEntity<>(etDTO, HttpStatus.CREATED);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.CONFLICT);
         }
 
@@ -38,14 +38,14 @@ public class EducationTitleController {
 
     @Operation(summary = "GET ALL Education Titles")
     @GetMapping
-    public ResponseEntity<List<EducationTitleDTO>> getAll(){
+    public ResponseEntity<List<EducationTitleDTO>> getAll() {
         List<EducationTitleDTO> list = educationTitleConverter.entitiesToDTOs(educationTitleService.getAll());
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @Operation(summary = "DELETE Education Title by it's ID - code")
     @DeleteMapping("/{code}")
-    public ResponseEntity<String> delete(@PathVariable String code){
+    public ResponseEntity<String> delete(@PathVariable String code) {
         try {
             educationTitleService.delete(code);
             return new ResponseEntity<>("Education Title successfully removed!", HttpStatus.OK);
@@ -57,7 +57,7 @@ public class EducationTitleController {
 
     @Operation(summary = "GET Education Title by it's name")
     @GetMapping("/{educationTitle}")
-    public ResponseEntity<?> finfByName(@PathVariable String educationTitle){
+    public ResponseEntity<?> finfByName(@PathVariable String educationTitle) {
         try {
             EducationTitleDTO etDTO = educationTitleConverter.toDTO(educationTitleService.findByName(educationTitle));
             return new ResponseEntity<>(etDTO, HttpStatus.OK);

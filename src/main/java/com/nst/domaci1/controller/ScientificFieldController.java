@@ -28,8 +28,8 @@ public class ScientificFieldController {
     public ResponseEntity<?> save(@RequestBody ScientificFieldDTO scientificFieldDTO) {
         ScientificField sf = scientificFieldConverter.toEntity(scientificFieldDTO);
         try {
-             ScientificFieldDTO scDTO = scientificFieldConverter.toDTO(scientificFieldService.save(sf));
-             return new ResponseEntity<>(scDTO, HttpStatus.CREATED);
+            ScientificFieldDTO scDTO = scientificFieldConverter.toDTO(scientificFieldService.save(sf));
+            return new ResponseEntity<>(scDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.CONFLICT);
         }
@@ -37,14 +37,14 @@ public class ScientificFieldController {
 
     @Operation(summary = "GET ALL Scientific Fields")
     @GetMapping
-    public ResponseEntity<List<ScientificFieldDTO>> getAll(){
+    public ResponseEntity<List<ScientificFieldDTO>> getAll() {
         List<ScientificFieldDTO> list = scientificFieldConverter.entitiesToDTOs(scientificFieldService.getAll());
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @Operation(summary = "DELETE Scientific Field by it's ID - code")
     @DeleteMapping("/{code}")
-    public ResponseEntity<String> delete(@PathVariable String code){
+    public ResponseEntity<String> delete(@PathVariable String code) {
         try {
             scientificFieldService.delete(code);
             return new ResponseEntity<>("Scientific Field successfully removed!", HttpStatus.OK);
@@ -55,7 +55,7 @@ public class ScientificFieldController {
 
     @Operation(summary = "GET Scientific Field by name")
     @GetMapping("/{scientificField}")
-    public ResponseEntity<?> findByName(@PathVariable String scientificField){
+    public ResponseEntity<?> findByName(@PathVariable String scientificField) {
         try {
             ScientificFieldDTO sfDTO = scientificFieldConverter.toDTO(scientificFieldService.findByName(scientificField));
             return new ResponseEntity<>(sfDTO, HttpStatus.OK);

@@ -8,11 +8,11 @@ public interface DtoEntityConverter<D, E> {
 
     E toEntity(D d);
 
-    default List<D> entitiesToDTOs(List<E> entities){
+    default List<D> entitiesToDTOs(List<E> entities) {
         return entities.stream().map(this::toDTO).toList();
     }
 
-    default List<E> DTOsToEntities(List<D> DTOs){
+    default List<E> DTOsToEntities(List<D> DTOs) {
         return DTOs.stream().map(this::toEntity).toList();
     }
 }

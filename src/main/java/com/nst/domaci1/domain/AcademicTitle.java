@@ -18,7 +18,7 @@ public class AcademicTitle {
 
 
     public AcademicTitle() {
-            
+
     }
 
     public AcademicTitle(String code, String academicTitleName) {

@@ -2,8 +2,6 @@ package com.nst.domaci1.domain;
 
 import jakarta.persistence.*;
 
-import java.util.Objects;
-
 @Entity
 @Table
 public class Member {

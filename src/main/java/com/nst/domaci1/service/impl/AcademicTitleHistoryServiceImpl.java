@@ -42,7 +42,7 @@ public class AcademicTitleHistoryServiceImpl implements AcademicTitleHistoryServ
     public List<AcademicTitleHistory> findAllByMemberId(Long memberId) throws Exception {
 
         Optional<Member> memberDB = memberRepository.findById(memberId);
-        if (memberDB.isEmpty()){
+        if (memberDB.isEmpty()) {
             throw new Exception("Member with the given firstname and lastname doesn't exist in database!");
         }
 

@@ -1,16 +1,12 @@
 package com.nst.domaci1.service.impl;
 
 import com.nst.domaci1.domain.Department;
-import com.nst.domaci1.domain.ManagementOfDepartmentHistory;
-import com.nst.domaci1.domain.ManagerRole;
-import com.nst.domaci1.domain.Member;
 import com.nst.domaci1.repository.DepartmentRepository;
 import com.nst.domaci1.repository.ManagementOfDepartmentHistoryRepository;
 import com.nst.domaci1.repository.MemberRepository;
 import com.nst.domaci1.service.DepartmentService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +27,7 @@ public class DepartmnetServiceImpl implements DepartmentService {
     public Department save(Department department) throws Exception {
         Optional<Department> depDB = departmentRepository.findById(department.getName());
         if (depDB.isPresent()) {
-            throw new Exception("Department with the given name already exists!");
+            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         } else {
             return departmentRepository.save(department);
         }
@@ -49,7 +45,7 @@ public class DepartmnetServiceImpl implements DepartmentService {
         if (depDB.isPresent()) {
             departmentRepository.delete(depDB.get());
         } else {
-            throw new Exception("Department with the given ID-name doesn't exist!");
+            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
     }
 

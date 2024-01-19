@@ -31,7 +31,7 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
     public ManagementOfDepartmentHistory setSupervisorForDepartment(Long memberId, String departmentName) throws Exception {
         Optional<Department> depDB = departmentRepository.findById(departmentName);
         if (depDB.isEmpty()) {
-            throw new Exception("Department with the given name doesn't exist!");
+            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
         Department department = depDB.get();
 
@@ -39,7 +39,7 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
         if (memDB.isPresent()) {
             Member newSupervisor = memDB.get();
             if (newSupervisor.getManagerRole() == ManagerRole.SUPERVISOR) {
-                throw new Exception("This Member is already Supervisor of " + newSupervisor.getDepartment().getName() + " department");
+                throw new Exception("This Member is already Supervisor of " + newSupervisor.getDepartment().getName());
             }
             newSupervisor.setManagerRole(ManagerRole.SUPERVISOR);
             Member updatedMemberRole = memberRepository.save(newSupervisor);
@@ -65,7 +65,7 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
     public ManagementOfDepartmentHistory setSecretaryForDepartment(Long memberId, String departmentName) throws Exception {
         Optional<Department> depDB = departmentRepository.findById(departmentName);
         if (depDB.isEmpty()) {
-            throw new Exception("Department with the given name doesn't exist!");
+            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
         Department department = depDB.get();
 
@@ -100,7 +100,7 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
 
         Optional<Department> depDB = departmentRepository.findById(departmentName);
         if (depDB.isEmpty()) {
-            throw new Exception("Department with the given name doesn't exist!");
+            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
 
         return managementOfDepartmentHistoryRepository.findByDepartmentOrderByStartDateDesc(depDB.get());
@@ -115,7 +115,7 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
 
         Optional<Department> depDB = departmentRepository.findById(departmentName);
         if (depDB.isEmpty()) {
-            throw new Exception("Department with the given name doesn't exist!");
+            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
 
         return managementOfDepartmentHistoryRepository.findByMemberAndDepartmentOrderByStartDateDesc(memDB.get(), depDB.get());
@@ -123,7 +123,7 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
     }
 
     @Override
-    public void deleteManagementOfDepartmentHistory(Long managementOfDepartmentHistoryId) throws Exception {
+    public void deleteByIdManagementOfDepartmentHistory(Long managementOfDepartmentHistoryId) throws Exception {
         Optional<ManagementOfDepartmentHistory> entity = managementOfDepartmentHistoryRepository.findById(managementOfDepartmentHistoryId);
         if (entity.isPresent()) {
             managementOfDepartmentHistoryRepository.delete(entity.get());

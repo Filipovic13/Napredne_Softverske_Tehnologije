@@ -3,7 +3,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-   <!-- CREATE TABLE department-->
+    <!-- CREATE TABLE department-->
     <changeSet id="create-department" author="sara">
         <sqlFile path="ddl/create-department.sql" relativeToChangelogFile="true"/>
     </changeSet>
@@ -46,7 +46,6 @@
     <!-- ////////////////////////////////////////////////////////////////////////////////////////////-->
 
 
-
     <!-- FILL TABLE academic title codebook -->
     <changeSet id="init-academic-title-codebook" author="sara">
         <sqlFile path="dml/init-academic-title-codebook.sql" relativeToChangelogFile="true"/>
@@ -61,7 +60,6 @@
     <changeSet id="init-scientific-field-codebook" author="sara">
         <sqlFile path="dml/init-scientific-field-codebook.sql" relativeToChangelogFile="true"/>
     </changeSet>
-
 
 
     <!-- FILL TABLE department -->
@@ -88,7 +86,6 @@
     <changeSet id="init-management-of-department-history" author="sara">
         <sqlFile path="dml/init-management-of-department-history.sql" relativeToChangelogFile="true"/>
     </changeSet>
-
 
 
 </databaseChangeLog>

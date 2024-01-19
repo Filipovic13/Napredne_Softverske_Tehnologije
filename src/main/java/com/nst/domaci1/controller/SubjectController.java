@@ -7,6 +7,8 @@ import com.nst.domaci1.service.SubjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.NotSupportedException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,7 +59,7 @@ public class SubjectController {
 
     @Operation(summary = "UPDATE ESPB value for Subject")
     @PatchMapping("/{id}/{espb}")
-    public  ResponseEntity<?> update(@PathVariable Long id, @Valid @PathVariable int espb) {
+    public ResponseEntity<?> update(@PathVariable Long id, @Min(value = 2, message = "espb must be at least 2") @Max(value = 6, message = "espb must be at most 6") @PathVariable int espb) {
         try {
             SubjectDTO subjDTO = subjectConverter.toDTO(subjectService.update(id, espb));
             return new ResponseEntity<>(subjDTO, HttpStatus.OK);

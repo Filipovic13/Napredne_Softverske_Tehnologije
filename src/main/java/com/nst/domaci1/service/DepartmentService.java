@@ -1,7 +1,6 @@
 package com.nst.domaci1.service;
 
 import com.nst.domaci1.domain.Department;
-import com.nst.domaci1.domain.ManagementOfDepartmentHistory;
 
 import java.util.List;
 
