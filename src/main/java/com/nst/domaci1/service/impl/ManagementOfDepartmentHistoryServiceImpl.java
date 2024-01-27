@@ -4,14 +4,13 @@ import com.nst.domaci1.domain.Department;
 import com.nst.domaci1.domain.ManagementOfDepartmentHistory;
 import com.nst.domaci1.domain.ManagerRole;
 import com.nst.domaci1.domain.Member;
-import com.nst.domaci1.dto.ManagementOfDepartmentHistoryDTO;
+import com.nst.domaci1.dto.ManagementOfDepartmentHistorySaveUpdateDTO;
 import com.nst.domaci1.repository.DepartmentRepository;
 import com.nst.domaci1.repository.ManagementOfDepartmentHistoryRepository;
 import com.nst.domaci1.repository.MemberRepository;
 import com.nst.domaci1.service.ManagementOfDepartmentHistoryService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,144 +27,156 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
         this.memberRepository = memberRepository;
     }
 
+
+
     @Override
-    public ManagementOfDepartmentHistory setSupervisorForDepartment(Long memberId, String departmentName) throws Exception {
+    public List<ManagementOfDepartmentHistory> findAllByDepartmentName(String departmentName) throws Exception {
         Optional<Department> depDB = departmentRepository.findById(departmentName);
         if (depDB.isEmpty()) {
             throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
-        Department department = depDB.get();
-
-        Optional<Member> memDB = memberRepository.findById(memberId);
-        if (memDB.isPresent()) {
-            Member newSupervisor = memDB.get();
-            if (newSupervisor.getManagerRole() == ManagerRole.SUPERVISOR) {
-                throw new Exception("This Member is already Supervisor of " + newSupervisor.getDepartment().getName());
-            }
-            newSupervisor.setManagerRole(ManagerRole.SUPERVISOR);
-            Member updatedMemberRole = memberRepository.save(newSupervisor);
-
-            Optional<ManagementOfDepartmentHistory> lastRecord = managementOfDepartmentHistoryRepository.findFirstByDepartmentAndManagerRoleOrderByStartDateDesc(department, ManagerRole.SUPERVISOR);
-            if (lastRecord.isPresent()) {
-                Member formerSupervisor = lastRecord.get().getMember();
-                formerSupervisor.setManagerRole(ManagerRole.NONE);
-                memberRepository.save(formerSupervisor);
-
-                ManagementOfDepartmentHistory lastRecordToUpdate = lastRecord.get();
-                lastRecordToUpdate.setEndDate(LocalDate.now());
-                managementOfDepartmentHistoryRepository.save(lastRecordToUpdate);
-            }
-
-            return managementOfDepartmentHistoryRepository.save(new ManagementOfDepartmentHistory(null, LocalDate.now(), null, ManagerRole.SUPERVISOR, updatedMemberRole, department));
-        } else {
-            throw new Exception("Member with the given ID doesn't exist!");
-        }
-    }
-
-    @Override
-    public ManagementOfDepartmentHistory setSecretaryForDepartment(Long memberId, String departmentName) throws Exception {
-        Optional<Department> depDB = departmentRepository.findById(departmentName);
-        if (depDB.isEmpty()) {
-            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
-        }
-        Department department = depDB.get();
-
-        Optional<Member> memDB = memberRepository.findById(memberId);
-        if (memDB.isPresent()) {
-            Member newSecretary = memDB.get();
-            if (newSecretary.getManagerRole() == ManagerRole.SECRETARY) {
-                throw new Exception("This Member is already Secretary of " + newSecretary.getDepartment().getName() + " department");
-            }
-            newSecretary.setManagerRole(ManagerRole.SECRETARY);
-            Member updatedMemberRole = memberRepository.save(newSecretary);
-
-            Optional<ManagementOfDepartmentHistory> lastRecord = managementOfDepartmentHistoryRepository.findFirstByDepartmentAndManagerRoleOrderByStartDateDesc(department, ManagerRole.SECRETARY);
-            if (lastRecord.isPresent()) {
-                Member formerSecretary = lastRecord.get().getMember();
-                formerSecretary.setManagerRole(ManagerRole.NONE);
-                memberRepository.save(formerSecretary);
-
-                ManagementOfDepartmentHistory lastRecordToUpdate = lastRecord.get();
-                lastRecordToUpdate.setEndDate(LocalDate.now());
-                managementOfDepartmentHistoryRepository.save(lastRecordToUpdate);
-            }
-
-            return managementOfDepartmentHistoryRepository.save(new ManagementOfDepartmentHistory(null, LocalDate.now(), null, ManagerRole.SECRETARY, updatedMemberRole, department));
-        } else {
-            throw new Exception("Member with the given ID doesn't exist!");
-        }
-    }
-
-    @Override
-    public List<ManagementOfDepartmentHistory> findAllManagersByDepartmentName(String departmentName) throws Exception {
-
-        Optional<Department> depDB = departmentRepository.findById(departmentName);
-        if (depDB.isEmpty()) {
-            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
-        }
-
         return managementOfDepartmentHistoryRepository.findByDepartmentOrderByStartDateDesc(depDB.get());
     }
 
     @Override
-    public List<ManagementOfDepartmentHistory> findAllByMemberAndDepartment(Long memberId, String departmentName) throws Exception {
+    public List<ManagementOfDepartmentHistory> findAllByMember(Long memberId) throws Exception {
         Optional<Member> memDB = memberRepository.findById(memberId);
         if (memDB.isEmpty()) {
             throw new Exception("Member with the given ID doesn't exist!");
         }
 
-        Optional<Department> depDB = departmentRepository.findById(departmentName);
-        if (depDB.isEmpty()) {
-            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
-        }
-
-        return managementOfDepartmentHistoryRepository.findByMemberAndDepartmentOrderByStartDateDesc(memDB.get(), depDB.get());
-
+        return managementOfDepartmentHistoryRepository.findByMemberOrderByStartDateDesc(memDB.get());
     }
 
     @Override
-    public void deleteByIdManagementOfDepartmentHistory(Long managementOfDepartmentHistoryId) throws Exception {
+    public void deleteById(Long managementOfDepartmentHistoryId) throws Exception {
         Optional<ManagementOfDepartmentHistory> entity = managementOfDepartmentHistoryRepository.findById(managementOfDepartmentHistoryId);
-        if (entity.isPresent()) {
-            managementOfDepartmentHistoryRepository.delete(entity.get());
-        } else {
+        if (entity.isEmpty()) {
             throw new Exception("Management Of DepartmentHistory with the given ID doesn't exist!");
         }
+        managementOfDepartmentHistoryRepository.delete(entity.get());
     }
 
     @Override
-    public ManagementOfDepartmentHistory findByIdManagementOfDepartmentHistory(Long managementOfDepartmentHistoryId) throws Exception {
+    public ManagementOfDepartmentHistory findById(Long managementOfDepartmentHistoryId) throws Exception {
         Optional<ManagementOfDepartmentHistory> entity = managementOfDepartmentHistoryRepository.findById(managementOfDepartmentHistoryId);
-        if (entity.isPresent()) {
-            return entity.get();
-        } else {
+        if (entity.isEmpty()) {
             throw new Exception("Management Of DepartmentHistory with the given ID doesn't exist!");
         }
+        return entity.get();
     }
 
     @Override
     public ManagementOfDepartmentHistory getLatestMangerOfDepartment(String departmentName, String managerRole) throws Exception {
         Optional<Department> depDb = departmentRepository.findById(departmentName);
-        if (depDb.isEmpty()){
+        if (depDb.isEmpty()) {
             throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
         Department department = depDb.get();
 
         ManagerRole chosenRole;
-        if (managerRole.equalsIgnoreCase("supervisor")){
+        if (managerRole.equalsIgnoreCase("supervisor")) {
             chosenRole = ManagerRole.SUPERVISOR;
         } else if (managerRole.equalsIgnoreCase("secretary")) {
             chosenRole = ManagerRole.SECRETARY;
-        }else {
-            throw new Exception("Role can only take values: Supervisor or Secretary!");
+        } else {
+            throw new Exception("Manger role can only be Supervisor or Secretary!");
         }
 
         Optional<ManagementOfDepartmentHistory> lastManager = managementOfDepartmentHistoryRepository.findFirstByDepartmentAndManagerRoleOrderByStartDateDesc(department, chosenRole);
-        if (lastManager.isPresent()){
-            return lastManager.get();
-        }else {
+        if (lastManager.isEmpty()) {
             throw new Exception("There is no " + chosenRole.toString() + " for department - " + departmentName);
         }
+        return lastManager.get();
+    }
+
+    @Override
+    public ManagementOfDepartmentHistory save(ManagementOfDepartmentHistorySaveUpdateDTO dto) throws Exception {
+
+        if (dto.getEndDate().isBefore(dto.getStartDate())){
+            throw new Exception("End date must be after start date!");
+        }
+
+        ManagerRole chosenRole;
+        if (dto.getManagerRole().equalsIgnoreCase("supervisor")) {
+            chosenRole = ManagerRole.SUPERVISOR;
+        } else if (dto.getManagerRole().equalsIgnoreCase("secretary")) {
+            chosenRole = ManagerRole.SECRETARY;
+        } else {
+            throw new Exception("Manger role can only be Supervisor or Secretary!");
+        }
+
+
+        Optional<Member> memDB = memberRepository.findById(dto.getMemberId());
+        if (memDB.isEmpty()) {
+            throw new Exception("Member with the given ID doesn't exist!");
+        }
+        if (memDB.get().getManagerRole() == ManagerRole.SUPERVISOR) {
+            throw new Exception("This member is already a Supervisor!");
+        }
+        if (memDB.get().getManagerRole() == ManagerRole.SECRETARY) {
+            throw new Exception("This member is already a Secretary!");
+        }
+
+        Optional<Department> depDB = departmentRepository.findById(dto.getDepartmentName());
+        if (depDB.isEmpty()) {
+            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
+        }
+
+
+        ManagementOfDepartmentHistory mngmnt = new ManagementOfDepartmentHistory(null, dto.getStartDate(), dto.getEndDate(), chosenRole, memDB.get(), depDB.get());
+        return managementOfDepartmentHistoryRepository.save(mngmnt);
+    }
+
+
+
+    @Override
+    public ManagementOfDepartmentHistory update(Long managementOfDepartmentHistoryId, ManagementOfDepartmentHistorySaveUpdateDTO dto) throws Exception {
+
+        Optional<ManagementOfDepartmentHistory> mngmntDB = managementOfDepartmentHistoryRepository.findById(managementOfDepartmentHistoryId);
+        if (mngmntDB.isEmpty()){
+            throw new Exception("Management Of Department History with the given ID doesn't exist!");
+        }
+
+        if (dto.getEndDate().isBefore(dto.getStartDate())){
+            throw new Exception("End date must be after start date!");
+        }
+
+        ManagerRole chosenRole;
+        if (dto.getManagerRole().equalsIgnoreCase("supervisor")) {
+            chosenRole = ManagerRole.SUPERVISOR;
+        } else if (dto.getManagerRole().equalsIgnoreCase("secretary")) {
+            chosenRole = ManagerRole.SECRETARY;
+        } else {
+            throw new Exception("Manger role can only be Supervisor or Secretary!");
+        }
+
+
+        Optional<Member> memDB = memberRepository.findById(dto.getMemberId());
+        if (memDB.isEmpty()) {
+            throw new Exception("Member with the given ID doesn't exist!");
+        }
+        if (memDB.get().getManagerRole() == ManagerRole.SUPERVISOR) {
+            throw new Exception("This member is already a Supervisor!");
+        }
+        if (memDB.get().getManagerRole() == ManagerRole.SECRETARY) {
+            throw new Exception("This member is already a Secretary!");
+        }
+
+        Optional<Department> depDB = departmentRepository.findById(dto.getDepartmentName());
+        if (depDB.isEmpty()) {
+            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
+        }
+
+
+        ManagementOfDepartmentHistory mngmnt = mngmntDB.get();
+        mngmnt.setStartDate(dto.getStartDate());
+        mngmnt.setEndDate(dto.getEndDate());
+        mngmnt.setManagerRole(chosenRole);
+        mngmnt.setMember(memDB.get());
+        mngmnt.setDepartment(depDB.get());
+
+        return managementOfDepartmentHistoryRepository.save(mngmnt);
     }
 
 
