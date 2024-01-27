@@ -106,7 +106,6 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
             throw new Exception("Manger role can only be Supervisor or Secretary!");
         }
 
-
         Optional<Member> memDB = memberRepository.findById(dto.getMemberId());
         if (memDB.isEmpty()) {
             throw new Exception("Member with the given ID doesn't exist!");

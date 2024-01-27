@@ -13,8 +13,6 @@ public class MemberDTO implements Serializable {
 
     private String lastName;
 
-    private ManagerRole managerRole;
-
     private AcademicTitleDTO academicTitle;
 
     private EducationTitleDTO educationTitle;
@@ -26,11 +24,10 @@ public class MemberDTO implements Serializable {
     public MemberDTO() {
     }
 
-    public MemberDTO(Long id, String firstName, String lastName, ManagerRole managerRole, AcademicTitleDTO academicTitle, EducationTitleDTO educationTitle, ScientificFieldDTO scientificField, DepartmentDTO departmentDTO) {
+    public MemberDTO(Long id, String firstName, String lastName, AcademicTitleDTO academicTitle, EducationTitleDTO educationTitle, ScientificFieldDTO scientificField, DepartmentDTO departmentDTO) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.managerRole = managerRole;
         this.academicTitle = academicTitle;
         this.educationTitle = educationTitle;
         this.scientificField = scientificField;
@@ -59,14 +56,6 @@ public class MemberDTO implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public ManagerRole getManagerRole() {
-        return managerRole;
-    }
-
-    public void setManagerRole(ManagerRole managerRole) {
-        this.managerRole = managerRole;
     }
 
     public AcademicTitleDTO getAcademicTitle() {

@@ -40,10 +40,6 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Member save(MemberSaveUpdateDTO dto) throws Exception {
 
-        if (!dto.getManagerRole().equalsIgnoreCase("NONE")) {
-            throw new Exception("When adding new member, manager role MUST BE set to NONE.");
-        }
-
         Optional<AcademicTitle> academicTitleDB = academicTitleRepository.findByAcademicTitleName(dto.getAcademicTitle());
         if (academicTitleDB.isEmpty()) {
             throw new Exception("Academic Title doesn't exist!\n Enter one of the values that exist in database: \n " + academicTitleRepository.findAllAcademicTitleNames());

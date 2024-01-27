@@ -2,7 +2,6 @@ CREATE TABLE member (
     id BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
-    manager_role VARCHAR(255),
     academic_title_code VARCHAR(255),
     education_title_code VARCHAR(255),
     scientific_field_code VARCHAR(255),

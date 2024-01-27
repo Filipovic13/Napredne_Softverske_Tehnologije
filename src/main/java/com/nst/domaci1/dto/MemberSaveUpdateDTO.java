@@ -12,9 +12,6 @@ public class MemberSaveUpdateDTO implements Serializable {
     @NotBlank(message = "Lastname must be entered!")
     private String lastName;
 
-    @NotBlank(message = "Manager role must be entered!")
-    private String managerRole;
-
     @NotBlank(message = "Academic title must be entered!")
     private String academicTitle;
 
@@ -31,10 +28,9 @@ public class MemberSaveUpdateDTO implements Serializable {
     }
 
 
-    public MemberSaveUpdateDTO(String firstName, String lastName, String managerRole, String academicTitle, String educationTitle, String scientificField, String departmentName) {
+    public MemberSaveUpdateDTO(String firstName, String lastName, String academicTitle, String educationTitle, String scientificField, String departmentName) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.managerRole = managerRole;
         this.academicTitle = academicTitle;
         this.educationTitle = educationTitle;
         this.scientificField = scientificField;
@@ -55,14 +51,6 @@ public class MemberSaveUpdateDTO implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getManagerRole() {
-        return managerRole;
-    }
-
-    public void setManagerRole(String managerRole) {
-        this.managerRole = managerRole;
     }
 
     public String getAcademicTitle() {
