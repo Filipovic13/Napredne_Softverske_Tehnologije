@@ -8,10 +8,9 @@ import java.io.Serializable;
 public class MemberDTO implements Serializable {
 
     private Long id;
-    @NotNull
+
     private String firstName;
 
-    @NotNull
     private String lastName;
 
     private ManagerRole managerRole;
