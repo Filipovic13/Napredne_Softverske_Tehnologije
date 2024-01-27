@@ -111,12 +111,6 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
         if (memDB.isEmpty()) {
             throw new Exception("Member with the given ID doesn't exist!");
         }
-        if (memDB.get().getManagerRole() == ManagerRole.SUPERVISOR) {
-            throw new Exception("This member is already a Supervisor!");
-        }
-        if (memDB.get().getManagerRole() == ManagerRole.SECRETARY) {
-            throw new Exception("This member is already a Secretary!");
-        }
 
         Optional<Department> depDB = departmentRepository.findById(dto.getDepartmentName());
         if (depDB.isEmpty()) {
@@ -155,12 +149,6 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
         Optional<Member> memDB = memberRepository.findById(dto.getMemberId());
         if (memDB.isEmpty()) {
             throw new Exception("Member with the given ID doesn't exist!");
-        }
-        if (memDB.get().getManagerRole() == ManagerRole.SUPERVISOR) {
-            throw new Exception("This member is already a Supervisor!");
-        }
-        if (memDB.get().getManagerRole() == ManagerRole.SECRETARY) {
-            throw new Exception("This member is already a Secretary!");
         }
 
         Optional<Department> depDB = departmentRepository.findById(dto.getDepartmentName());
