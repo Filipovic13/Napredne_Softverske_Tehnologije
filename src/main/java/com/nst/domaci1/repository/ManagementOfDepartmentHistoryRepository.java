@@ -15,7 +15,5 @@ public interface ManagementOfDepartmentHistoryRepository extends JpaRepository<M
 
     Optional<ManagementOfDepartmentHistory> findFirstByDepartmentAndManagerRoleOrderByStartDateDesc(Department department, ManagerRole managerRole);
 
-    List<ManagementOfDepartmentHistory> findByMemberAndDepartmentOrderByStartDateDesc(Member member, Department department);
-
-
+    List<ManagementOfDepartmentHistory> findByMemberOrderByStartDateDesc(Member member);
 }

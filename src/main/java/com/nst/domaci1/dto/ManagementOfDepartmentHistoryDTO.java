@@ -11,11 +11,9 @@ public class ManagementOfDepartmentHistoryDTO implements Serializable {
 
     private Long id;
 
-    @NotNull(message = "Start date must be entered!")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
-    @NotNull(message = "End date must be entered!")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
