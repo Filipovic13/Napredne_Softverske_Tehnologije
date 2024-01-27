@@ -1,17 +1,14 @@
 package com.nst.domaci1.dto;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 
 import java.io.Serializable;
 
 public class SubjectDTO implements Serializable {
+
     private Long id;
 
     private String name;
 
-    @Min(value = 2, message = "Value must be greater than or equal to 2")
-    @Max(value = 6, message = "Value must be less than or equal to 6")
     private int espb;
 
     private DepartmentDTO departmentDTO;
