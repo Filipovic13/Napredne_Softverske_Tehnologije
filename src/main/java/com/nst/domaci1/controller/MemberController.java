@@ -2,12 +2,13 @@ package com.nst.domaci1.controller;
 
 import com.nst.domaci1.converter.impl.AcademicTitleHistoryConverter;
 import com.nst.domaci1.converter.impl.MemberConverter;
+import com.nst.domaci1.domain.AcademicTitleHistory;
 import com.nst.domaci1.domain.Member;
-import com.nst.domaci1.dto.AcademicTitleHistoryDTO;
-import com.nst.domaci1.dto.MemberDTO;
+import com.nst.domaci1.dto.*;
 import com.nst.domaci1.service.AcademicTitleHistoryService;
 import com.nst.domaci1.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -38,10 +39,9 @@ public class MemberController {
 
     @Operation(summary = "SAVE new Member")
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody MemberDTO memberDTO) {
-        Member member = memberConverter.toEntity(memberDTO);
+    public ResponseEntity<?> save(@Valid @RequestBody MemberSaveUpdateDTO dto) {
         try {
-            MemberDTO memDTO = memberConverter.toDTO(memberService.save(member));
+            MemberDTO memDTO = memberConverter.toDTO(memberService.save(dto));
             return new ResponseEntity<>(memDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.CONFLICT);
@@ -88,10 +88,11 @@ public class MemberController {
     }
 
     @Operation(summary = "UPDATE Member's fields regarding science")
-    @PatchMapping("/{memberId}/{academicTitle}/{educationTitle}/{scienceField}")
-    public ResponseEntity<?> updateScienceFields(@PathVariable Long memberId, @PathVariable String academicTitle, @PathVariable String educationTitle, String scienceField) throws Exception {
+    @PatchMapping("/updateScienceFields/{memberId}")
+    public ResponseEntity<?> updateScienceFields(@PathVariable Long memberId, @Valid @RequestBody MemberChangeAllScienceFieldsDTO dto) throws Exception {
+
         try {
-            Member member = memberService.updateScienceFields(memberId, academicTitle, educationTitle, scienceField);
+            Member member = memberService.updateScienceFields(memberId, dto);
             return new ResponseEntity<>(memberConverter.toDTO(member), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -99,11 +100,12 @@ public class MemberController {
 
     }
 
+
     @Operation(summary = "UPDATE Member's department to which belongs")
-    @PatchMapping("/{memberId}/{departmentName}")
-    public ResponseEntity<?> updateDepartment(@PathVariable Long memberId, @PathVariable String departmentName) throws Exception {
+    @PatchMapping("/updateDepartment/{memberId}")
+    public ResponseEntity<?> updateDepartment(@PathVariable Long memberId, @Valid @RequestBody MemberChangeDepartmentDTO changeDepartmentDTO) throws Exception {
         try {
-            Member member = memberService.updateDepartment(memberId, departmentName);
+            Member member = memberService.updateDepartment(memberId, changeDepartmentDTO);
             return new ResponseEntity<>(memberConverter.toDTO(member), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -124,15 +126,15 @@ public class MemberController {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    @Operation(summary = "GET ALL Academic Title History")
-    @GetMapping("/academicTitles")
+    @Operation(summary = "GET ALL Academic Title Histories")
+    @GetMapping("/academicTitleHistories")
     public ResponseEntity<List<AcademicTitleHistoryDTO>> getAllAcademicTitleHistories() {
         List<AcademicTitleHistoryDTO> list = academicTitleHistoryConverter.entitiesToDTOs(academicTitleHistoryService.getAll());
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @Operation(summary = "GET ALL Academic Title History - PAGEABLE")
-    @GetMapping("/academicTitles/paging")
+    @Operation(summary = "GET ALL Academic Title Histories - PAGEABLE")
+    @GetMapping("/academicTitleHistories/paging")
     public ResponseEntity<Page<AcademicTitleHistoryDTO>> getAllByPageAcademicTitleHistories(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "pageSize", defaultValue = "2") int pageSize,
@@ -152,7 +154,7 @@ public class MemberController {
 
 
     @Operation(summary = "GET ALL Academic Title Histories by Member ID")
-    @GetMapping("/academicTitles/{memberId}")
+    @GetMapping("/{memberId}/academicTitleHistories")
     public ResponseEntity<?> findAllAcademicTitleHistoriesByMember(@PathVariable Long memberId) {
         List<AcademicTitleHistoryDTO> titlesOfMember = null;
         try {
@@ -163,5 +165,41 @@ public class MemberController {
         }
 
     }
+
+
+    @Operation(summary = "SAVE new Academic Title History")
+    @PostMapping("/academicTitleHistory")
+    public ResponseEntity<?> saveAcademicTitleHistory(@Valid @RequestBody AcademicTitleHistorySaveUpdateDTO dto) {
+        try {
+            AcademicTitleHistoryDTO createdDTO = academicTitleHistoryConverter.toDTO(academicTitleHistoryService.save(dto));
+            return new ResponseEntity<>(createdDTO, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @Operation(summary = "UPDATE Academic Title History")
+    @PutMapping("/academicTitleHistory/{academicTitleHistoryId}")
+    public ResponseEntity<?> updateAcademicTitleHistory(@PathVariable Long academicTitleHistoryId, @Valid @RequestBody AcademicTitleHistorySaveUpdateDTO dto) {
+        try {
+            AcademicTitleHistory updatedAcademicTitle = academicTitleHistoryService.updateAcademicTitleHistory(academicTitleHistoryId, dto);
+            return new ResponseEntity<>(academicTitleHistoryConverter.toDTO(updatedAcademicTitle), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Operation(summary = "DELETE Academic Title History by it's ID")
+    @DeleteMapping("/academicTitle/{academicTitleId}")
+    public ResponseEntity<String> deleteAcademicTitleHistory(@PathVariable Long academicTitleId) {
+        try {
+            academicTitleHistoryService.delete(academicTitleId);
+            return new ResponseEntity<>("Academic Title History successfully removed!", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 
 }
