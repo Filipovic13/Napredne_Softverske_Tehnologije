@@ -63,7 +63,6 @@ public class MemberServiceImpl implements MemberService {
         Member member = new Member();
         member.setFirstName(dto.getFirstName());
         member.setLastName(dto.getLastName());
-        member.setManagerRole(ManagerRole.NONE);
         member.setAcademicTitle(academicTitleDB.get());
         member.setEducationTitle(educationTitleDB.get());
         member.setScientificField(scientificFieldDB.get());
@@ -92,10 +91,6 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> memDB = memberRepository.findById(id);
         if (memDB.isEmpty()) {
             throw new Exception("Member with the given ID doesn't exist!");
-        }
-
-        if (memDB.get().getManagerRole() == ManagerRole.SUPERVISOR || memDB.get().getManagerRole() == ManagerRole.SECRETARY) {
-            throw new Exception("You can not delete Supervisor or Secretary!\nFirst change member's role, then delete a member.");
         }
 
         List<AcademicTitleHistory> academicTitleHistories = academicTitleHistoryRepository.findAllByMemberId(id);

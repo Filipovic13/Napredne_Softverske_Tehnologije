@@ -1,7 +1,5 @@
 package com.nst.domaci1.dto;
 
-import com.nst.domaci1.domain.*;
-import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 

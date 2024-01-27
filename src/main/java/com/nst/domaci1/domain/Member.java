@@ -16,10 +16,6 @@ public class Member {
     @Column(name = "last_name")
     private String lastName;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ManagerRole managerRole;
-
     @ManyToOne
     @JoinColumn(name = "academic_title_code", referencedColumnName = "code")
     private AcademicTitle academicTitle;
@@ -40,11 +36,10 @@ public class Member {
     public Member() {
     }
 
-    public Member(Long id, String firstName, String lastName, ManagerRole managerRole, AcademicTitle academicTitle, EducationTitle educationTitle, ScientificField scientificField, Department department) {
+    public Member(Long id, String firstName, String lastName, AcademicTitle academicTitle, EducationTitle educationTitle, ScientificField scientificField, Department department) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.managerRole = managerRole;
         this.academicTitle = academicTitle;
         this.educationTitle = educationTitle;
         this.scientificField = scientificField;
@@ -73,14 +68,6 @@ public class Member {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public ManagerRole getManagerRole() {
-        return managerRole;
-    }
-
-    public void setManagerRole(ManagerRole managerRole) {
-        this.managerRole = managerRole;
     }
 
     public AcademicTitle getAcademicTitle() {

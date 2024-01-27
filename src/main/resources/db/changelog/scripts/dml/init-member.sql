@@ -1,4 +1,4 @@
-INSERT INTO member (id, first_name, last_name, manager_role, academic_title_code, education_title_code, scientific_field_code, department_name)
+INSERT INTO member (id, first_name, last_name, academic_title_code, education_title_code, scientific_field_code, department_name)
 VALUES
 (1, 'Jana', 'Janic',  'AT#08', 'ET#04', 'SF#04', 'Katedra za softversko inzenjerstvo'),
 (2, 'Novak', 'Novakovic', 'AT#01', 'ET#04', 'SF#04', 'Katedra za softversko inzenjerstvo'),
