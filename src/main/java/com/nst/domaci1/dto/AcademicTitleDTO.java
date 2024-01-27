@@ -6,9 +6,10 @@ import java.io.Serializable;
 
 public class AcademicTitleDTO implements Serializable {
 
+    @NotNull(message = "Academic title code must be entered!")
     private String code;
 
-    @NotNull
+    @NotNull(message = "Academic title name must be entered!")
     private String name;
 
     public AcademicTitleDTO() {

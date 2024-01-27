@@ -5,6 +5,7 @@ import com.nst.domaci1.domain.EducationTitle;
 import com.nst.domaci1.dto.EducationTitleDTO;
 import com.nst.domaci1.service.EducationTitleService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class EducationTitleController {
 
     @Operation(summary = "SAVE new Education Title")
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody EducationTitleDTO educationTitleDTO) {
+    public ResponseEntity<?> save(@Valid @RequestBody EducationTitleDTO educationTitleDTO) {
         EducationTitle et = educationTitleConverter.toEntity(educationTitleDTO);
         try {
             EducationTitleDTO etDTO = educationTitleConverter.toDTO(educationTitleService.save(et));

@@ -20,10 +20,11 @@ public class AcademicTitleServiceImpl implements AcademicTitleService {
     @Override
     public AcademicTitle save(AcademicTitle academicTitle) throws Exception {
         Optional<AcademicTitle> acTitleCodeDB = academicTitleRepository.findById(academicTitle.getAcademicTitleCode());
-        Optional<AcademicTitle> acTitleNameDB = academicTitleRepository.findByAcademicTitleName(academicTitle.getAcademicTitleName());
         if (acTitleCodeDB.isPresent()) {
             throw new Exception("Academic Title with this ID - code already exists!");
         }
+
+        Optional<AcademicTitle> acTitleNameDB = academicTitleRepository.findByAcademicTitleName(academicTitle.getAcademicTitleName());
         if (acTitleNameDB.isPresent()) {
             throw new Exception("Academic Title with this name already exists!");
         }
@@ -48,7 +49,7 @@ public class AcademicTitleServiceImpl implements AcademicTitleService {
     public AcademicTitle findByName(String academicTitle) throws Exception {
         Optional<AcademicTitle> acTitleDB = academicTitleRepository.findByAcademicTitleName(academicTitle);
         if (acTitleDB.isEmpty()) {
-            throw new Exception("Academic Title doesn't exist!");
+            throw new Exception("Academic Title with the given name doesn't exist!");
         }
         return acTitleDB.get();
     }

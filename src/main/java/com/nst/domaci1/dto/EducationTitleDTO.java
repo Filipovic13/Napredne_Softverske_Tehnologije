@@ -5,9 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 public class EducationTitleDTO implements Serializable {
+
+    @NotNull(message = "Education title code must be entered!")
     private String code;
 
-    @NotNull
+    @NotNull(message = "Education title name must be entered!")
     private String name;
 
     public EducationTitleDTO() {

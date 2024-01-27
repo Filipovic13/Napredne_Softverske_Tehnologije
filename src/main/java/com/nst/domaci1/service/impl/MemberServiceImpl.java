@@ -1,6 +1,9 @@
 package com.nst.domaci1.service.impl;
 
 import com.nst.domaci1.domain.*;
+import com.nst.domaci1.dto.MemberChangeAllScienceFieldsDTO;
+import com.nst.domaci1.dto.MemberChangeDepartmentDTO;
+import com.nst.domaci1.dto.MemberSaveUpdateDTO;
 import com.nst.domaci1.repository.*;
 import com.nst.domaci1.service.MemberService;
 import jakarta.transaction.Transactional;
@@ -35,36 +38,41 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Member save(Member member) throws Exception {
-        Optional<AcademicTitle> academicTitleDB = academicTitleRepository.findByAcademicTitleName(member.getAcademicTitle().getAcademicTitleName());
-        Optional<EducationTitle> educationTitleDB = educationTitleRepository.findByEducationTitleName(member.getEducationTitle().getEducationTitleName());
-        Optional<ScientificField> scientificFieldDB = scientificFieldRepository.findByScientificFieldName(member.getScientificField().getScientificFieldName());
+    public Member save(MemberSaveUpdateDTO dto) throws Exception {
 
+        if (!dto.getManagerRole().equalsIgnoreCase("NONE")) {
+            throw new Exception("When adding new member, manager role MUST BE set to NONE.");
+        }
+
+        Optional<AcademicTitle> academicTitleDB = academicTitleRepository.findByAcademicTitleName(dto.getAcademicTitle());
         if (academicTitleDB.isEmpty()) {
             throw new Exception("Academic Title doesn't exist!\n Enter one of the values that exist in database: \n " + academicTitleRepository.findAllAcademicTitleNames());
         }
+
+        Optional<EducationTitle> educationTitleDB = educationTitleRepository.findByEducationTitleName(dto.getEducationTitle());
         if (educationTitleDB.isEmpty()) {
             throw new Exception("Education Title doesn't exist!\n Enter one of the values that exist in database: \n " + educationTitleRepository.findAllEducationTitlesNames());
         }
+
+        Optional<ScientificField> scientificFieldDB = scientificFieldRepository.findByScientificFieldName(dto.getScientificField());
         if (scientificFieldDB.isEmpty()) {
             throw new Exception("Scientific Field doesn't exist!\n Enter one of the values that exist in database: \n " + scientificFieldRepository.findAllScientificFieldNames());
         }
 
-
-        if (!member.getManagerRole().toString().equalsIgnoreCase("NONE")) {
-            throw new Exception("When adding new member, manager role MUST BE set to NONE.");
-        }
-
-        Optional<Department> depDB = departmentRepository.findById(member.getDepartment().getName());
+        Optional<Department> depDB = departmentRepository.findById(dto.getDepartmentName());
         if (depDB.isEmpty()) {
             throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
 
+        Member member = new Member();
+        member.setFirstName(dto.getFirstName());
+        member.setLastName(dto.getLastName());
+        member.setManagerRole(ManagerRole.NONE);
         member.setAcademicTitle(academicTitleDB.get());
         member.setEducationTitle(educationTitleDB.get());
         member.setScientificField(scientificFieldDB.get());
-
         member.setDepartment(depDB.get());
+
         Member savedMember = memberRepository.save(member);
 
         academicTitleHistoryRepository.save(new AcademicTitleHistory(null, LocalDate.now(), null, academicTitleDB.get(), scientificFieldDB.get(), savedMember));
@@ -86,48 +94,49 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void delete(Long id) throws Exception {
         Optional<Member> memDB = memberRepository.findById(id);
-        if (memDB.isPresent()) {
-            if (memDB.get().getManagerRole() == ManagerRole.SUPERVISOR || memDB.get().getManagerRole() == ManagerRole.SECRETARY) {
-                throw new Exception("You can not delete Supervisor or Secretary!\nFirst change member's role, then delete a member.");
-            }
-
-            List<AcademicTitleHistory> academicTitleHistories = academicTitleHistoryRepository.findAllByMemberId(id);
-            for (AcademicTitleHistory history : academicTitleHistories) {
-                academicTitleHistoryRepository.delete(history);
-            }
-            memberRepository.deleteById(id);
-        } else {
+        if (memDB.isEmpty()) {
             throw new Exception("Member with the given ID doesn't exist!");
         }
 
+        if (memDB.get().getManagerRole() == ManagerRole.SUPERVISOR || memDB.get().getManagerRole() == ManagerRole.SECRETARY) {
+            throw new Exception("You can not delete Supervisor or Secretary!\nFirst change member's role, then delete a member.");
+        }
+
+        List<AcademicTitleHistory> academicTitleHistories = academicTitleHistoryRepository.findAllByMemberId(id);
+        for (AcademicTitleHistory history : academicTitleHistories) {
+            academicTitleHistoryRepository.delete(history);
+        }
+        memberRepository.deleteById(id);
     }
 
     @Override
     @Transactional
-    public Member updateScienceFields(Long memberId, String academicTitle, String educationTitle, String scienceField) throws Exception {
+    public Member updateScienceFields(Long memberId, MemberChangeAllScienceFieldsDTO changeScienceFieldsDTO) throws Exception {
 
         Optional<Member> memDB = memberRepository.findById(memberId);
         if (memDB.isEmpty()) {
-            throw new Exception("Member with entered firstname and lastname doesn't exist!");
+            throw new Exception("Member with the given ID doesn't exist!");
         }
 
-        Optional<AcademicTitle> academicTitleDB = academicTitleRepository.findByAcademicTitleName(academicTitle);
-        Optional<EducationTitle> educationTitleDB = educationTitleRepository.findByEducationTitleName(educationTitle);
-        Optional<ScientificField> scientificFieldDB = scientificFieldRepository.findByScientificFieldName(scienceField);
-
+        Optional<AcademicTitle> academicTitleDB = academicTitleRepository.findByAcademicTitleName(changeScienceFieldsDTO.getAcademicTitle());
         if (academicTitleDB.isEmpty()) {
             throw new Exception("Academic Title doesn't exist!\n Enter one of the values that exist in database: \n " + academicTitleRepository.findAllAcademicTitleNames());
         }
+
+        Optional<EducationTitle> educationTitleDB = educationTitleRepository.findByEducationTitleName(changeScienceFieldsDTO.getEducationTitle());
         if (educationTitleDB.isEmpty()) {
             throw new Exception("Education Title doesn't exist!\n Enter one of the values that exist in database: \n " + educationTitleRepository.findAllEducationTitlesNames());
         }
+
+        Optional<ScientificField> scientificFieldDB = scientificFieldRepository.findByScientificFieldName(changeScienceFieldsDTO.getScienceField());
         if (scientificFieldDB.isEmpty()) {
             throw new Exception("Scientific Field doesn't exist!\n Enter one of the values that exist in database: \n " + scientificFieldRepository.findAllScientificFieldNames());
         }
 
+
         // new academic title can't be the same as the previous - from Academic Title History
         Optional<AcademicTitleHistory> lastTitleHistoryRecord = academicTitleHistoryRepository.findFirstByMemberIdOrderByStartDateDesc(memberId);
-        if (lastTitleHistoryRecord.isPresent() && lastTitleHistoryRecord.get().getAcademicTitle().getAcademicTitleName().equals(academicTitle)) {
+        if (lastTitleHistoryRecord.isPresent() && lastTitleHistoryRecord.get().getAcademicTitle().getAcademicTitleName().equals(changeScienceFieldsDTO.getAcademicTitle())) {
             throw new Exception("Entered Academic Title name is already last title.\nPlease enter different Academic title name if you want to make changes!");
         }
 
@@ -159,14 +168,14 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Member updateDepartment(Long memberId, String departmentName) throws Exception {
+    public Member updateDepartment(Long memberId, MemberChangeDepartmentDTO changeDepartmentDTO) throws Exception {
 
         Optional<Member> memDB = memberRepository.findById(memberId);
         if (memDB.isEmpty()) {
             throw new Exception("Member with the given ID doesn't exist!");
         }
 
-        Optional<Department> depDB = departmentRepository.findById(departmentName);
+        Optional<Department> depDB = departmentRepository.findById(changeDepartmentDTO.getDepartmentName());
         if (depDB.isEmpty()) {
             throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
@@ -180,11 +189,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member findById(Long id) throws Exception {
         Optional<Member> memDB = memberRepository.findById(id);
-        if (memDB.isPresent()) {
-            return memDB.get();
-        } else {
-            throw new Exception("Member with the given ID - name and lastname doesn't exist!");
+        if (memDB.isEmpty()) {
+            throw new Exception("Member with the given ID doesn't exist!");
         }
+        return memDB.get();
     }
 
 

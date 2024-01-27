@@ -5,6 +5,7 @@ import com.nst.domaci1.domain.ScientificField;
 import com.nst.domaci1.dto.ScientificFieldDTO;
 import com.nst.domaci1.service.ScientificFieldService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class ScientificFieldController {
 
     @Operation(summary = "SAVE new Scientific Field")
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody ScientificFieldDTO scientificFieldDTO) {
+    public ResponseEntity<?> save(@Valid @RequestBody ScientificFieldDTO scientificFieldDTO) {
         ScientificField sf = scientificFieldConverter.toEntity(scientificFieldDTO);
         try {
             ScientificFieldDTO scDTO = scientificFieldConverter.toDTO(scientificFieldService.save(sf));

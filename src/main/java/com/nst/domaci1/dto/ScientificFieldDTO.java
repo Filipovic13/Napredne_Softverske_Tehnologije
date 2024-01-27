@@ -1,13 +1,16 @@
 package com.nst.domaci1.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 
 public class ScientificFieldDTO implements Serializable {
+
+    @NotBlank(message = "Scientific field code must be entered!")
     private String code;
 
-    @NotNull
+    @NotBlank(message = "Scientific field name must be entered!")
     private String name;
 
     public ScientificFieldDTO() {

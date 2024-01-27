@@ -25,13 +25,13 @@ public class DepartmnetServiceImpl implements DepartmentService {
 
     @Override
     public Department save(Department department) throws Exception {
+
         Optional<Department> depDB = departmentRepository.findById(department.getName());
         if (depDB.isPresent()) {
-            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
-        } else {
-            return departmentRepository.save(department);
+            throw new Exception("Department with the given name already exists!");
         }
 
+        return departmentRepository.save(department);
     }
 
     @Override
@@ -42,23 +42,20 @@ public class DepartmnetServiceImpl implements DepartmentService {
     @Override
     public void delete(String name) throws Exception {
         Optional<Department> depDB = departmentRepository.findById(name);
-        if (depDB.isPresent()) {
-            departmentRepository.delete(depDB.get());
-        } else {
+        if (depDB.isEmpty()) {
             throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
+        departmentRepository.delete(depDB.get());
     }
 
 
     @Override
     public Department findById(String name) throws Exception {
         Optional<Department> depDB = departmentRepository.findById(name);
-        if (depDB.isPresent()) {
-            return depDB.get();
-        } else {
-            throw new Exception("Department with the given ID-name doesn't exist!");
+        if (depDB.isEmpty()) {
+            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
-
+        return depDB.get();
     }
 
 }

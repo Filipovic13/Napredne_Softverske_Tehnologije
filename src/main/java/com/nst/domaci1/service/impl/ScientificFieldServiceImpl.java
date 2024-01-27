@@ -19,11 +19,13 @@ public class ScientificFieldServiceImpl implements ScientificFieldService {
 
     @Override
     public ScientificField save(ScientificField scientificField) throws Exception {
+
         Optional<ScientificField> scFieldCodeDB = scientificFieldRepository.findById(scientificField.getScientificFieldCode());
-        Optional<ScientificField> scFieldNameDB = scientificFieldRepository.findByScientificFieldName(scientificField.getScientificFieldName());
         if (scFieldCodeDB.isPresent()) {
             throw new Exception("Scientific Field with this ID - code already exists!");
         }
+
+        Optional<ScientificField> scFieldNameDB = scientificFieldRepository.findByScientificFieldName(scientificField.getScientificFieldName());
         if (scFieldNameDB.isPresent()) {
             throw new Exception("Scientific Field with this name already exists!");
         }
@@ -40,7 +42,7 @@ public class ScientificFieldServiceImpl implements ScientificFieldService {
     public void delete(String code) throws Exception {
         Optional<ScientificField> scFieldDB = scientificFieldRepository.findById(code);
         if (scFieldDB.isEmpty()) {
-            throw new Exception("Scientific Field doesn't exist with the given ID - code!");
+            throw new Exception("Scientific Field with the given ID - code doesn't exist!");
         }
         scientificFieldRepository.deleteById(code);
     }
@@ -49,7 +51,7 @@ public class ScientificFieldServiceImpl implements ScientificFieldService {
     public ScientificField findByName(String scientificField) throws Exception {
         Optional<ScientificField> scFieldDB = scientificFieldRepository.findByScientificFieldName(scientificField);
         if (scFieldDB.isEmpty()) {
-            throw new Exception("Scientific Filed doesn't exist!");
+            throw new Exception("Scientific Filed with the given name doesn't exist!");
         }
         return scFieldDB.get();
     }

@@ -6,9 +6,10 @@ import java.io.Serializable;
 
 public class DepartmentDTO implements Serializable {
 
-    @NotNull
+    @NotNull(message = "Department name must be entered!")
     private String name;
 
+    @NotNull(message = "Department short must be entered!")
     private String shortName;
 
     public DepartmentDTO() {
