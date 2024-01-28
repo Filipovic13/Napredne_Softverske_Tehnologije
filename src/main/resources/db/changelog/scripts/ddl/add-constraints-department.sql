@@ -1,0 +1,3 @@
+ALTER TABLE department
+    ADD CONSTRAINT fk_supervisor FOREIGN KEY (supervisor_id) REFERENCES member (id) ON UPDATE CASCADE ON DELETE SET NULL,
+    ADD CONSTRAINT fk_secretary FOREIGN KEY (secretary_id) REFERENCES member (id) ON UPDATE CASCADE ON DELETE SET NULL;
