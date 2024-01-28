@@ -1,12 +1,18 @@
 package com.nst.domaci1.service.impl;
 
 import com.nst.domaci1.domain.Department;
+import com.nst.domaci1.domain.ManagementOfDepartmentHistory;
+import com.nst.domaci1.domain.ManagerRole;
+import com.nst.domaci1.domain.Member;
+import com.nst.domaci1.dto.DepartmentSetManagerDTO;
 import com.nst.domaci1.repository.DepartmentRepository;
 import com.nst.domaci1.repository.ManagementOfDepartmentHistoryRepository;
 import com.nst.domaci1.repository.MemberRepository;
 import com.nst.domaci1.service.DepartmentService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,6 +62,56 @@ public class DepartmnetServiceImpl implements DepartmentService {
             throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
         return depDB.get();
+    }
+
+    @Override
+    @Transactional
+    public Department setManagerForDepartment(String departmentName, DepartmentSetManagerDTO dto) throws Exception {
+        Optional<Department> depDB = departmentRepository.findById(departmentName);
+        if (depDB.isEmpty()) {
+            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
+        }
+        Department department = depDB.get();
+
+        ManagerRole role;
+        if (dto.getManagerRole().equalsIgnoreCase("supervisor")){
+            role = ManagerRole.SUPERVISOR;
+        } else if (dto.getManagerRole().equalsIgnoreCase("secretary")) {
+            role = ManagerRole.SECRETARY;
+        }else {
+            throw new Exception("Manager role can only be Supervisor or Secretary!");
+        }
+
+        if(dto.getMemberId() == null){
+            if (role == ManagerRole.SUPERVISOR){
+                department.setSupervisorId(null);
+            }else{
+                department.setSecretaryId(null);
+            }
+        }
+
+        Optional<Member> memDB = memberRepository.findById(dto.getMemberId());
+        if (memDB.isEmpty()) {
+            throw new Exception("Member with the given ID doesn't exist!");
+        }
+
+
+        Optional<ManagementOfDepartmentHistory> lastRecord = managementOfDepartmentHistoryRepository.findFirstByDepartmentAndManagerRoleOrderByStartDateDesc(department, role);
+        if (lastRecord.isPresent() && lastRecord.get().getEndDate() == null) {
+            ManagementOfDepartmentHistory lastRecordToUpdate = lastRecord.get();
+            lastRecordToUpdate.setEndDate(LocalDate.now());
+            managementOfDepartmentHistoryRepository.save(lastRecordToUpdate);
+        }
+
+
+        if (role == ManagerRole.SUPERVISOR){
+            department.setSupervisorId(memDB.get().getId());
+        }else{
+            department.setSecretaryId(memDB.get().getId());
+        }
+        managementOfDepartmentHistoryRepository.save(new ManagementOfDepartmentHistory(null, LocalDate.now(), null, role, memDB.get(), department));
+
+        return departmentRepository.save(department);
     }
 
 }

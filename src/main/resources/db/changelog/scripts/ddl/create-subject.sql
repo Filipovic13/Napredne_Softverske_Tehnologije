@@ -4,5 +4,5 @@ CREATE TABLE subject(
     espb INT NOT NULL,
     department_name VARCHAR(255),
     PRIMARY KEY (id),
-    CONSTRAINT fk_subject_in_department FOREIGN KEY (department_name) REFERENCES department (name) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT fk_subject_in_department FOREIGN KEY (department_name) REFERENCES department (name) ON UPDATE CASCADE ON DELETE SET NULL
 );

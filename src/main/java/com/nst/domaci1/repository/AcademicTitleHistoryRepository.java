@@ -13,5 +13,4 @@ public interface AcademicTitleHistoryRepository extends JpaRepository<AcademicTi
 
     Optional<AcademicTitleHistory> findFirstByMemberIdOrderByStartDateDesc(Long memberId);
 
-    List<AcademicTitleHistory> findByMemberIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualAndIdNot(Long memberId, LocalDate endDate, LocalDate startDate, Long currentHistoryId);
 }

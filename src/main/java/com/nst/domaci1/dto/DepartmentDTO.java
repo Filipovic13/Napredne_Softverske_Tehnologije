@@ -1,23 +1,30 @@
 package com.nst.domaci1.dto;
 
-import jakarta.validation.constraints.NotNull;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
 public class DepartmentDTO implements Serializable {
 
-    @NotNull(message = "Department name must be entered!")
     private String name;
 
-    @NotNull(message = "Department short must be entered!")
     private String shortName;
+
+    @Schema(nullable = true)
+    private Long supervisorId;
+
+    @Schema(nullable = true)
+    private Long secretaryId;
 
     public DepartmentDTO() {
     }
 
-    public DepartmentDTO(String name, String shortName) {
+    public DepartmentDTO(String name, String shortName, Long supervisorId, Long secretaryId) {
         this.name = name;
         this.shortName = shortName;
+        this.supervisorId = supervisorId;
+        this.secretaryId = secretaryId;
     }
 
     public String getName() {
@@ -36,4 +43,19 @@ public class DepartmentDTO implements Serializable {
         this.shortName = shortName;
     }
 
+    public Long getSupervisorId() {
+        return supervisorId;
+    }
+
+    public void setSupervisorId(Long supervisorId) {
+        this.supervisorId = supervisorId;
+    }
+
+    public Long getSecretaryId() {
+        return secretaryId;
+    }
+
+    public void setSecretaryId(Long secretaryId) {
+        this.secretaryId = secretaryId;
+    }
 }

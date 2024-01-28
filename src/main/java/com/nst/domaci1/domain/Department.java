@@ -13,13 +13,19 @@ public class Department {
 
     private String shortName;
 
+    private Long supervisorId;
+
+    private Long secretaryId;
+
     public Department() {
 
     }
 
-    public Department(String name, String shortName) {
+    public Department(String name, String shortName, Long supervisorId, Long secretaryId) {
         this.name = name;
         this.shortName = shortName;
+        this.supervisorId = supervisorId;
+        this.secretaryId = secretaryId;
     }
 
     public String getName() {
@@ -36,6 +42,22 @@ public class Department {
 
     public void setShortName(String shortName) {
         this.shortName = shortName;
+    }
+
+    public Long getSupervisorId() {
+        return supervisorId;
+    }
+
+    public void setSupervisorId(Long supervisorId) {
+        this.supervisorId = supervisorId;
+    }
+
+    public Long getSecretaryId() {
+        return secretaryId;
+    }
+
+    public void setSecretaryId(Long secretaryId) {
+        this.secretaryId = secretaryId;
     }
 
     @Override

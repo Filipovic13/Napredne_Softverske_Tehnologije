@@ -12,7 +12,9 @@ public class DepartmentConverter implements DtoEntityConverter<DepartmentDTO, De
     public DepartmentDTO toDTO(Department d) {
         return new DepartmentDTO(
                 d.getName(),
-                d.getShortName()
+                d.getShortName(),
+                d.getSupervisorId(),
+                d.getSecretaryId()
         );
     }
 
@@ -20,7 +22,9 @@ public class DepartmentConverter implements DtoEntityConverter<DepartmentDTO, De
     public Department toEntity(DepartmentDTO dto) {
         return new Department(
                 dto.getName(),
-                dto.getShortName()
+                dto.getShortName(),
+                dto.getSupervisorId(),
+                dto.getSecretaryId()
         );
     }
 }

@@ -5,6 +5,7 @@ import com.nst.domaci1.converter.impl.ManagementOfDepartmentHistoryConverter;
 import com.nst.domaci1.domain.Department;
 import com.nst.domaci1.domain.ManagementOfDepartmentHistory;
 import com.nst.domaci1.dto.DepartmentDTO;
+import com.nst.domaci1.dto.DepartmentSetManagerDTO;
 import com.nst.domaci1.dto.ManagementOfDepartmentHistoryDTO;
 import com.nst.domaci1.dto.ManagementOfDepartmentHistorySaveUpdateDTO;
 import com.nst.domaci1.service.DepartmentService;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/department")
@@ -76,6 +78,18 @@ public class DepartmentController {
             return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @Operation(summary = "PATCH set Manager for Department")
+    @PatchMapping("/setCurrentManager/{departmentName}")
+    public ResponseEntity<?> setManagerForDepartment(@PathVariable String departmentName, DepartmentSetManagerDTO dto) {
+        try {
+            Department department = departmentService.setManagerForDepartment(departmentName, dto);
+            return new ResponseEntity<>(departmentConverter.toDTO(department), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 

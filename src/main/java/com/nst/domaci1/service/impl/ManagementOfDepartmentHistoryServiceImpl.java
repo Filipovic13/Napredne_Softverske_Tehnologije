@@ -83,11 +83,16 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
             throw new Exception("Manger role can only be Supervisor or Secretary!");
         }
 
-        Optional<ManagementOfDepartmentHistory> lastManager = managementOfDepartmentHistoryRepository.findFirstByDepartmentAndManagerRoleOrderByStartDateDesc(department, chosenRole);
-        if (lastManager.isEmpty()) {
-            throw new Exception("There is no " + chosenRole.toString() + " for department - " + departmentName);
+        Optional<ManagementOfDepartmentHistory> lastEndDateNull = managementOfDepartmentHistoryRepository.findFirstByDepartmentAndManagerRoleAndEndDateIsNullOrderByStartDateDesc(department, chosenRole);
+        if (lastEndDateNull.isPresent()){
+            return lastEndDateNull.get();
+        }else{
+            Optional<ManagementOfDepartmentHistory> lastManager = managementOfDepartmentHistoryRepository.findFirstByDepartmentAndManagerRoleOrderByStartDateDesc(department, chosenRole);
+            if (lastManager.isEmpty()) {
+                throw new Exception("There is no " + chosenRole.toString() + " for department - " + departmentName);
+            }
+            return lastManager.get();
         }
-        return lastManager.get();
     }
 
     @Override
