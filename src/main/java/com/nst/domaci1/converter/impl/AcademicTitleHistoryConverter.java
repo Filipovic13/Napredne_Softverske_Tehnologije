@@ -1,42 +1,42 @@
 package com.nst.domaci1.converter.impl;
 
 import com.nst.domaci1.converter.DtoEntityConverter;
+import com.nst.domaci1.domain.AcademicTitle;
 import com.nst.domaci1.domain.AcademicTitleHistory;
+import com.nst.domaci1.domain.Member;
+import com.nst.domaci1.domain.ScientificField;
 import com.nst.domaci1.dto.AcademicTitleHistoryDTO;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AcademicTitleHistoryConverter implements DtoEntityConverter<AcademicTitleHistoryDTO, AcademicTitleHistory> {
 
-    private MemberConverter memberConverter;
-    private AcademicTitleConverter academicTitleConverter;
-    private ScientificFieldConverter scientificFieldConverter;
-
-    public AcademicTitleHistoryConverter(MemberConverter memberConverter, AcademicTitleConverter academicTitleConverter, ScientificFieldConverter scientificFieldConverter) {
-        this.memberConverter = memberConverter;
-        this.academicTitleConverter = academicTitleConverter;
-        this.scientificFieldConverter = scientificFieldConverter;
-    }
-
     @Override
     public AcademicTitleHistoryDTO toDTO(AcademicTitleHistory titleHistory) {
-        return new AcademicTitleHistoryDTO(
+        return titleHistory == null ? null : new AcademicTitleHistoryDTO(
                 titleHistory.getId(),
                 titleHistory.getStartDate(),
                 titleHistory.getEndDate(),
-                academicTitleConverter.toDTO(titleHistory.getAcademicTitle()),
-                scientificFieldConverter.toDTO(titleHistory.getScientificField()),
-                memberConverter.toDTO(titleHistory.getMember()));
+                titleHistory.getAcademicTitle().getAcademicTitleName(),
+                titleHistory.getScientificField().getScientificFieldName(),
+                titleHistory.getMember().getId()
+        );
     }
 
     @Override
     public AcademicTitleHistory toEntity(AcademicTitleHistoryDTO dto) {
-        return new AcademicTitleHistory(
+        return dto == null ? null : new AcademicTitleHistory(
                 dto.getId(),
                 dto.getStartDate(),
                 dto.getEndDate(),
-                academicTitleConverter.toEntity(dto.getAcademicTitle()),
-                scientificFieldConverter.toEntity(dto.getScientificField()),
-                memberConverter.toEntity(dto.getMemberDTO()));
+                AcademicTitle.builder()
+                        .academicTitleName(dto.getAcademicTitle())
+                        .build(),
+                ScientificField.builder()
+                        .scientificFieldName(dto.getScientificField())
+                        .build(),
+                Member.builder().
+                        id(dto.getMemberId()).build()
+        );
     }
 }

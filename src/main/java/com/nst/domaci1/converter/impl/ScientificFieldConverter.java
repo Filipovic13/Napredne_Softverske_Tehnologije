@@ -7,13 +7,19 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ScientificFieldConverter implements DtoEntityConverter<ScientificFieldDTO, ScientificField> {
+
     @Override
     public ScientificFieldDTO toDTO(ScientificField scientificField) {
-        return new ScientificFieldDTO(scientificField.getScientificFieldCode(), scientificField.getScientificFieldName());
+        return scientificField == null ? null : new ScientificFieldDTO(
+                scientificField.getScientificFieldCode(),
+                scientificField.getScientificFieldName()
+        );
     }
 
     @Override
     public ScientificField toEntity(ScientificFieldDTO scientificFieldDTO) {
-        return new ScientificField(scientificFieldDTO.getCode(), scientificFieldDTO.getName());
+        return scientificFieldDTO == null ? null : new ScientificField(
+                scientificFieldDTO.getCode(),
+                scientificFieldDTO.getName());
     }
 }

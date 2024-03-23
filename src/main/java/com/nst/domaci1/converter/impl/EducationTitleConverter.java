@@ -7,13 +7,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EducationTitleConverter implements DtoEntityConverter<EducationTitleDTO, EducationTitle> {
+
     @Override
     public EducationTitleDTO toDTO(EducationTitle educationTitle) {
-        return new EducationTitleDTO(educationTitle.getEducationTitleCode(), educationTitle.getEducationTitleName());
+        return educationTitle == null ? null : new EducationTitleDTO(
+                educationTitle.getEducationTitleCode(),
+                educationTitle.getEducationTitleName()
+        );
     }
 
     @Override
     public EducationTitle toEntity(EducationTitleDTO educationTitleDTO) {
-        return new EducationTitle(educationTitleDTO.getCode(), educationTitleDTO.getName());
+        return educationTitleDTO == null ? null : new EducationTitle(
+                educationTitleDTO.getCode(),
+                educationTitleDTO.getName()
+        );
     }
 }
