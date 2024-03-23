@@ -33,7 +33,7 @@ class DepartmnetServiceImplTest {
             "Oi & Stat",
             5L,
             8L
-            );
+    );
 
     private Department department2 = new Department(
             "Katedra za matematiku",
@@ -81,7 +81,7 @@ class DepartmnetServiceImplTest {
         val result = departmentService.save(dto);
 
         assertNotNull(result);
-        assertEquals(dto,result);
+        assertEquals(dto, result);
     }
 
     @Test
@@ -95,7 +95,7 @@ class DepartmnetServiceImplTest {
     }
 
     @Test
-    void getAllSuccessTest()  {
+    void getAllSuccessTest() {
         List<Department> list = Arrays.asList(department, department2);
         List<DepartmentDTO> listDTO = Arrays.asList(dto, dto2);
 
@@ -117,10 +117,10 @@ class DepartmnetServiceImplTest {
     }
 
     @Test
-    void deleteFailureTest(){
+    void deleteFailureTest() {
         when(departmentRepository.findById(dto.getName()))
                 .thenReturn(Optional.empty());
-        assertThrows(Exception.class, ()-> {
+        assertThrows(Exception.class, () -> {
             departmentService.delete(dto.getName());
         });
     }

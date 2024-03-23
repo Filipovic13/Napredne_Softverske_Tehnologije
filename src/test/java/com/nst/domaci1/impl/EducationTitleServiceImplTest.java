@@ -31,11 +31,11 @@ class EducationTitleServiceImplTest {
     @MockBean
     private EducationTitleConverter educationTitleConverter;
 
-    private final EducationTitle educationTitle = new EducationTitle("#05","Honorary Degree");
-    private final EducationTitle educationTitle2 = new EducationTitle("#04","Doctoral Degree");
+    private final EducationTitle educationTitle = new EducationTitle("#05", "Honorary Degree");
+    private final EducationTitle educationTitle2 = new EducationTitle("#04", "Doctoral Degree");
 
-    private final EducationTitleDTO dto = new EducationTitleDTO("#05","Honorary Degree");
-    private final EducationTitleDTO dto2 = new EducationTitleDTO("#04","Doctoral Degree");
+    private final EducationTitleDTO dto = new EducationTitleDTO("#05", "Honorary Degree");
+    private final EducationTitleDTO dto2 = new EducationTitleDTO("#04", "Doctoral Degree");
 
     @BeforeEach
     void setUp() {
@@ -70,7 +70,7 @@ class EducationTitleServiceImplTest {
     void saveFailureTest() throws Exception {
         when(educationTitleRepository.findById(dto.getCode()))
                 .thenReturn(Optional.of(educationTitle));
-        Exception ex = assertThrows(Exception.class, ()-> {
+        Exception ex = assertThrows(Exception.class, () -> {
             educationTitleService.save(dto);
         });
         assertEquals("Education Title with this ID - code already exists!", ex.getMessage());
@@ -80,7 +80,7 @@ class EducationTitleServiceImplTest {
     void saveFailure2Test() throws Exception {
         when(educationTitleRepository.findByEducationTitleName(dto.getName()))
                 .thenReturn(Optional.of(educationTitle));
-        Exception ex = assertThrows(Exception.class, ()-> {
+        Exception ex = assertThrows(Exception.class, () -> {
             educationTitleService.save(dto);
         });
         assertEquals("Education Title with this name already exists!", ex.getMessage());
@@ -88,7 +88,7 @@ class EducationTitleServiceImplTest {
 
 
     @Test
-    void getAllSuccessTest()  {
+    void getAllSuccessTest() {
         List<EducationTitle> list = Arrays.asList(educationTitle, educationTitle2);
         List<EducationTitleDTO> listDTO = Arrays.asList(dto, dto2);
 
@@ -109,10 +109,10 @@ class EducationTitleServiceImplTest {
     }
 
     @Test
-    void deleteFailureTest(){
+    void deleteFailureTest() {
         when(educationTitleRepository.findById(dto.getCode()))
                 .thenReturn(Optional.empty());
-        Exception ex = assertThrows(Exception.class, ()-> {
+        Exception ex = assertThrows(Exception.class, () -> {
             educationTitleService.delete(dto.getCode());
         });
         assertEquals("Education Title  with the given ID - code doesn't exist!", ex.getMessage());
@@ -128,9 +128,9 @@ class EducationTitleServiceImplTest {
     }
 
     @Test
-    void findByNameFailureTest(){
+    void findByNameFailureTest() {
         when(educationTitleRepository.findByEducationTitleName(educationTitle.getEducationTitleCode())).thenReturn(Optional.empty());
-        Exception ex = assertThrows(Exception.class, ()-> {
+        Exception ex = assertThrows(Exception.class, () -> {
             educationTitleService.findByName(educationTitle.getEducationTitleName());
         });
         assertEquals("Education Title with the given name doesn't exist!", ex.getMessage());

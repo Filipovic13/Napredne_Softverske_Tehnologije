@@ -99,7 +99,8 @@ class AcademicTitleControllerTest {
 
         val responseAcademicTitleDto = objectMapper
                 .readValue(JSONResponse,
-                        new TypeReference<List<AcademicTitleDTO>>() {});
+                        new TypeReference<List<AcademicTitleDTO>>() {
+                        });
 
         assertEquals(listDTO, responseAcademicTitleDto);
     }
@@ -125,7 +126,7 @@ class AcademicTitleControllerTest {
                 .when(academicTitleService).delete("-1");
 
 
-        val JSONResponse = mockMvc.perform(delete(url + "/{code}","-1")
+        val JSONResponse = mockMvc.perform(delete(url + "/{code}", "-1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound()).andReturn().getResponse()
                 .getContentAsString();

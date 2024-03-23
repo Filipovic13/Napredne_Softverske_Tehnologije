@@ -74,7 +74,7 @@ class ScientificFieldServiceImplTest {
     }
 
     @Test
-    void getAllTest(){
+    void getAllTest() {
         List<ScientificField> scientificFields = Arrays.asList(scientificField, scientificField2);
         List<ScientificFieldDTO> scientificFieldsDTO = Arrays.asList(scientificFieldDTO, scientificFieldDTO2);
 
@@ -103,7 +103,7 @@ class ScientificFieldServiceImplTest {
         when(scientificFieldRepository
                 .findByScientificFieldName(scientificFieldDTO.getName()))
                 .thenReturn(Optional.empty());
-        assertThrows(Exception.class, ()->{
+        assertThrows(Exception.class, () -> {
             scientificFieldService.findByName(scientificFieldDTO.getName());
         });
     }

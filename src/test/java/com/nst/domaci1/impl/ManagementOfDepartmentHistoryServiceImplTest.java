@@ -38,7 +38,7 @@ class ManagementOfDepartmentHistoryServiceImplTest {
     private MemberRepository memberRepository;
 
     @MockBean
-    private  ManagementOfDepartmentHistoryConverter managementOfDepartmentHistoryConverter;
+    private ManagementOfDepartmentHistoryConverter managementOfDepartmentHistoryConverter;
 
 
     private final Department department = Department.builder().name("Katedra za matematiku").shortName("Mata").supervisorId(9L).secretaryId(12L).build();

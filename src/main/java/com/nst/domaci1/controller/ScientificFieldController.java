@@ -1,6 +1,5 @@
 package com.nst.domaci1.controller;
 
-import com.nst.domaci1.converter.impl.ScientificFieldConverter;
 import com.nst.domaci1.dto.ScientificFieldDTO;
 import com.nst.domaci1.service.ScientificFieldService;
 import io.swagger.v3.oas.annotations.Operation;

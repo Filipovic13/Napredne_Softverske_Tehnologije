@@ -3,7 +3,6 @@ package com.nst.domaci1.controller;
 import com.nst.domaci1.converter.impl.SubjectConverter;
 import com.nst.domaci1.dto.SubjectChangeEspbDTO;
 import com.nst.domaci1.dto.SubjectDTO;
-import com.nst.domaci1.dto.SubjectSaveUpdateDTO;
 import com.nst.domaci1.service.SubjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;

@@ -45,7 +45,6 @@ class AcademicTitleHistoryServiceImplTest {
     private AcademicTitleHistoryConverter academicTitleHistoryConverter;
 
 
-
     private final AcademicTitle at = new AcademicTitle("#01", "Professor");
     private final EducationTitle et = new EducationTitle("#04", "Doctoral Degree");
     private final ScientificField sf = new ScientificField("#03", "Artificial Intelligence");
@@ -204,7 +203,7 @@ class AcademicTitleHistoryServiceImplTest {
     }
 
     @Test
-    void updateAcademicTitleHistoryFailureTest(){
+    void updateAcademicTitleHistoryFailureTest() {
         when(academicTitleHistoryRepository.findById(academicTitleHistory.getId())).thenReturn(Optional.empty());
         Exception ex = assertThrows(Exception.class, () -> {
             academicTitleHistoryService.updateAcademicTitleHistory(academicTitleHistory.getId(), dto);
@@ -220,9 +219,9 @@ class AcademicTitleHistoryServiceImplTest {
     }
 
     @Test
-    void deleteFailureTest(){
+    void deleteFailureTest() {
         when(academicTitleHistoryRepository.findById(academicTitleHistory.getId())).thenReturn(Optional.empty());
-        Exception ex = assertThrows(Exception.class, ()-> {
+        Exception ex = assertThrows(Exception.class, () -> {
             academicTitleHistoryService.delete(academicTitleHistory.getId());
         });
         assertEquals("Academic Title History with the given ID does not exist!", ex.getMessage());

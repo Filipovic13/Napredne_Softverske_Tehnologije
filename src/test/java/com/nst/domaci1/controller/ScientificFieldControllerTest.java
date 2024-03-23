@@ -91,7 +91,8 @@ class ScientificFieldControllerTest {
                 .getContentAsString();
 
         val responseScientificFieldDTO = objectMapper.readValue(JSONResponse,
-                new TypeReference<List<ScientificFieldDTO>>() {});
+                new TypeReference<List<ScientificFieldDTO>>() {
+                });
 
         assertEquals(lisDTO, responseScientificFieldDTO);
     }

@@ -426,7 +426,7 @@ class MemberControllerTest {
 
         val JSONRequest = objectMapper.writeValueAsString(athDTO);
 
-        val JSONResponse = mockMvc.perform(put(url + "/academicTitleHistory/{academicTitleHistoryId}",1L )
+        val JSONResponse = mockMvc.perform(put(url + "/academicTitleHistory/{academicTitleHistoryId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JSONRequest))
                 .andExpect(status().isOk()).andReturn().getResponse()
@@ -461,7 +461,7 @@ class MemberControllerTest {
         doNothing().when(academicTitleHistoryService)
                 .delete(1L);
 
-        val JSONResponse = mockMvc.perform(delete(url + "/academicTitle/{academicTitleId}",1L )
+        val JSONResponse = mockMvc.perform(delete(url + "/academicTitle/{academicTitleId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn().getResponse()
                 .getContentAsString();

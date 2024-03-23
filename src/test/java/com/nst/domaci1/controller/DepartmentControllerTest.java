@@ -58,8 +58,8 @@ class DepartmentControllerTest {
 
     private final ManagementOfDepartmentHistoryDTO mngmntDTO = new ManagementOfDepartmentHistoryDTO(
             1L,
-            LocalDate.of(2021, 1,1),
-            LocalDate.of(2022, 1,1),
+            LocalDate.of(2021, 1, 1),
+            LocalDate.of(2022, 1, 1),
             "Supervisor",
             1L,
             dto.getName()
@@ -67,8 +67,8 @@ class DepartmentControllerTest {
 
     private final ManagementOfDepartmentHistoryDTO mngmntDTO2 = new ManagementOfDepartmentHistoryDTO(
             2L,
-            LocalDate.of(2022, 1,1),
-            LocalDate.of(2023, 1,1),
+            LocalDate.of(2022, 1, 1),
+            LocalDate.of(2023, 1, 1),
             "Secretary",
             1L,
             dto.getName()
@@ -232,7 +232,8 @@ class DepartmentControllerTest {
                 .getContentAsString();
 
         val responseListDTO = objectMapper.readValue(JSONResponse,
-                new TypeReference<List<ManagementOfDepartmentHistoryDTO>>() {});
+                new TypeReference<List<ManagementOfDepartmentHistoryDTO>>() {
+                });
 
         assertEquals(list, responseListDTO);
     }
@@ -261,19 +262,20 @@ class DepartmentControllerTest {
         when(managementOfDepartmentHistoryService.findAllByMember(mngmntDTO.getMemberId()))
                 .thenReturn(list);
 
-        val JSONResponse = mockMvc.perform(get(url + "/managementOfDepartmentHistory/historyByMember/{memberId}",mngmntDTO.getMemberId())
+        val JSONResponse = mockMvc.perform(get(url + "/managementOfDepartmentHistory/historyByMember/{memberId}", mngmntDTO.getMemberId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn().getResponse()
                 .getContentAsString();
 
         val responseListDTO = objectMapper.readValue(JSONResponse,
-                new TypeReference<List<ManagementOfDepartmentHistoryDTO>>() {});
+                new TypeReference<List<ManagementOfDepartmentHistoryDTO>>() {
+                });
 
         assertEquals(list, responseListDTO);
     }
 
     @Test
-     void findAllManagementHistoryByMemberIdFailureTest() throws Exception {
+    void findAllManagementHistoryByMemberIdFailureTest() throws Exception {
 
         doThrow(new Exception("Member with the given ID doesn't exist!"))
                 .when(managementOfDepartmentHistoryService).findAllByMember(0L);
@@ -307,7 +309,7 @@ class DepartmentControllerTest {
                 .when(managementOfDepartmentHistoryService).deleteById(0L);
 
 
-        val JSONResponse = mockMvc.perform(delete(url + "/managementOfDepartmentHistory/{managementOfDepartmentHistoryId}",0L)
+        val JSONResponse = mockMvc.perform(delete(url + "/managementOfDepartmentHistory/{managementOfDepartmentHistoryId}", 0L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound()).andReturn().getResponse()
                 .getContentAsString();
@@ -405,7 +407,6 @@ class DepartmentControllerTest {
 
         assertEquals(mngmntDTO, responseDTO);
     }
-
 
 
     @Test
