@@ -3,9 +3,17 @@ package com.nst.domaci1.dto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class SubjectSaveUpdateDTO implements Serializable {
 
     @NotBlank(message = "Subject name must be entered!")
@@ -16,39 +24,6 @@ public class SubjectSaveUpdateDTO implements Serializable {
     private int espb;
 
     @NotBlank(message = "Department name must be entered!")
-    private String departmenName;
+    private String departmentName;
 
-    public SubjectSaveUpdateDTO() {
-    }
-
-
-    public SubjectSaveUpdateDTO(String name, int espb, String departmenName) {
-        this.name = name;
-        this.espb = espb;
-        this.departmenName = departmenName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getEspb() {
-        return espb;
-    }
-
-    public void setEspb(int espb) {
-        this.espb = espb;
-    }
-
-    public String getDepartmenName() {
-        return departmenName;
-    }
-
-    public void setDepartmenName(String departmenName) {
-        this.departmenName = departmenName;
-    }
 }
