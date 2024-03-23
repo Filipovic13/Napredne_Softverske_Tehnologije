@@ -1,8 +1,17 @@
 package com.nst.domaci1.dto;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class SubjectDTO implements Serializable {
 
     private Long id;
@@ -11,47 +20,6 @@ public class SubjectDTO implements Serializable {
 
     private int espb;
 
-    private DepartmentDTO departmentDTO;
+    private String department;
 
-    public SubjectDTO() {
-    }
-
-    public SubjectDTO(Long id, String name, int espb, DepartmentDTO departmentDTO) {
-        this.id = id;
-        this.name = name;
-        this.espb = espb;
-        this.departmentDTO = departmentDTO;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getEspb() {
-        return espb;
-    }
-
-    public void setEspb(int espb) {
-        this.espb = espb;
-    }
-
-    public DepartmentDTO getDepartmentDTO() {
-        return departmentDTO;
-    }
-
-    public void setDepartmentDTO(DepartmentDTO departmentDTO) {
-        this.departmentDTO = departmentDTO;
-    }
 }

@@ -10,7 +10,7 @@ public class DepartmentConverter implements DtoEntityConverter<DepartmentDTO, De
 
     @Override
     public DepartmentDTO toDTO(Department d) {
-        return new DepartmentDTO(
+        return d == null ? null : new DepartmentDTO(
                 d.getName(),
                 d.getShortName(),
                 d.getSupervisorId(),
@@ -20,7 +20,7 @@ public class DepartmentConverter implements DtoEntityConverter<DepartmentDTO, De
 
     @Override
     public Department toEntity(DepartmentDTO dto) {
-        return new Department(
+        return dto == null ? null : new Department(
                 dto.getName(),
                 dto.getShortName(),
                 dto.getSupervisorId(),

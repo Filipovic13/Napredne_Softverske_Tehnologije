@@ -4,9 +4,17 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "academic_title_codebook")
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AcademicTitle {
 
     @Id
@@ -16,29 +24,4 @@ public class AcademicTitle {
     @Column(name = "academic_title")
     private String academicTitleName;
 
-
-    public AcademicTitle() {
-
-    }
-
-    public AcademicTitle(String code, String academicTitleName) {
-        this.academicTitleCode = code;
-        this.academicTitleName = academicTitleName;
-    }
-
-    public String getAcademicTitleCode() {
-        return academicTitleCode;
-    }
-
-    public void setAcademicTitleCode(String academicTitleCode) {
-        this.academicTitleCode = academicTitleCode;
-    }
-
-    public String getAcademicTitleName() {
-        return academicTitleName;
-    }
-
-    public void setAcademicTitleName(String academicTitleName) {
-        this.academicTitleName = academicTitleName;
-    }
 }

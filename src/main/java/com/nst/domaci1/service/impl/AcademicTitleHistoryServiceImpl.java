@@ -1,9 +1,12 @@
 package com.nst.domaci1.service.impl;
 
+import com.nst.domaci1.converter.impl.AcademicTitleHistoryConverter;
 import com.nst.domaci1.domain.*;
-import com.nst.domaci1.dto.AcademicTitleHistorySaveUpdateDTO;
+import com.nst.domaci1.dto.AcademicTitleHistoryDTO;
 import com.nst.domaci1.repository.*;
 import com.nst.domaci1.service.AcademicTitleHistoryService;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,48 +15,47 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AcademicTitleHistoryServiceImpl implements AcademicTitleHistoryService {
 
-    private AcademicTitleHistoryRepository academicTitleHistoryRepository;
-    private MemberRepository memberRepository;
-    private AcademicTitleRepository academicTitleRepository;
-    private EducationTitleRepository educationTitleRepository;
-    private ScientificFieldRepository scientificFieldRepository;
+    private final AcademicTitleHistoryRepository academicTitleHistoryRepository;
+    private final MemberRepository memberRepository;
+    private final AcademicTitleRepository academicTitleRepository;
+    private final EducationTitleRepository educationTitleRepository;
+    private final ScientificFieldRepository scientificFieldRepository;
+    private final AcademicTitleHistoryConverter academicTitleHistoryConverter;
 
-    public AcademicTitleHistoryServiceImpl(AcademicTitleHistoryRepository academicTitleHistoryRepository, MemberRepository memberRepository, AcademicTitleRepository academicTitleRepository, EducationTitleRepository educationTitleRepository, ScientificFieldRepository scientificFieldRepository) {
-        this.academicTitleHistoryRepository = academicTitleHistoryRepository;
-        this.memberRepository = memberRepository;
-        this.academicTitleRepository = academicTitleRepository;
-        this.educationTitleRepository = educationTitleRepository;
-        this.scientificFieldRepository = scientificFieldRepository;
-    }
 
     @Override
-    public List<AcademicTitleHistory> getAll() {
-        return academicTitleHistoryRepository.findAll();
+    public List<AcademicTitleHistoryDTO> getAll() {
+        return academicTitleHistoryConverter
+                .entitiesToDTOs(academicTitleHistoryRepository.findAll());
     }
 
 
     @Override
-    public Page<AcademicTitleHistory> getALl(Pageable pageable) {
-        return academicTitleHistoryRepository.findAll(pageable);
+    public Page<AcademicTitleHistoryDTO> getALl(Pageable pageable) {
+        return academicTitleHistoryRepository
+                .findAll(pageable)
+                .map(academicTitleHistoryConverter::toDTO);
     }
 
     @Override
-    public List<AcademicTitleHistory> findAllByMemberId(Long memberId) throws Exception {
+    public List<AcademicTitleHistoryDTO> findAllByMemberId(Long memberId) throws Exception {
 
         Optional<Member> memberDB = memberRepository.findById(memberId);
         if (memberDB.isEmpty()) {
             throw new Exception("Member with the given ID doesn't exist in database!");
         }
+        val allByMember = academicTitleHistoryRepository.findAllByMemberId(memberId);
 
-        return academicTitleHistoryRepository.findAllByMemberId(memberId);
+        return academicTitleHistoryConverter.entitiesToDTOs(allByMember);
     }
 
     @Override
-    public AcademicTitleHistory save(AcademicTitleHistorySaveUpdateDTO dto) throws Exception {
+    public AcademicTitleHistoryDTO save(AcademicTitleHistoryDTO dto) throws Exception {
 
-        if (dto.getEndDate().isBefore(dto.getStartDate())) {
+        if (dto.getEndDate() != null && dto.getEndDate().isBefore(dto.getStartDate())) {
             throw new Exception("End end must be after start date!");
         }
 
@@ -79,18 +81,20 @@ public class AcademicTitleHistoryServiceImpl implements AcademicTitleHistoryServ
         academicTitleHistory.setScientificField(scientificFieldDB.get());
         academicTitleHistory.setMember(memberDB.get());
 
-        return academicTitleHistoryRepository.save(academicTitleHistory);
+        val savedAcademicTitleHistory = academicTitleHistoryRepository.save(academicTitleHistory);
+
+        return academicTitleHistoryConverter.toDTO(savedAcademicTitleHistory);
     }
 
     @Override
-    public AcademicTitleHistory updateAcademicTitleHistory(Long academicTitleHistoryId, AcademicTitleHistorySaveUpdateDTO dto) throws Exception {
+    public AcademicTitleHistoryDTO updateAcademicTitleHistory(Long academicTitleHistoryId, AcademicTitleHistoryDTO dto) throws Exception {
 
         Optional<AcademicTitleHistory> academicTitleHistoryDB = academicTitleHistoryRepository.findById(academicTitleHistoryId);
         if (academicTitleHistoryDB.isEmpty()) {
             throw new Exception("Academic Title History with the given ID doesn't exist in the database!");
         }
 
-        if (dto.getEndDate().isBefore(dto.getStartDate())) {
+        if (dto.getEndDate() != null && dto.getEndDate().isBefore(dto.getStartDate())) {
             throw new Exception("End end must be after start date!");
         }
 
@@ -109,15 +113,16 @@ public class AcademicTitleHistoryServiceImpl implements AcademicTitleHistoryServ
             throw new Exception("Member with the given ID does not exist!");
         }
 
-        AcademicTitleHistory academicTitleHistory = academicTitleHistoryDB.get();
 
+        AcademicTitleHistory academicTitleHistory = academicTitleHistoryDB.get();
         academicTitleHistory.setStartDate(dto.getStartDate());
         academicTitleHistory.setEndDate(dto.getEndDate());
         academicTitleHistory.setAcademicTitle(academicTitleDB.get());
         academicTitleHistory.setScientificField(scientificFieldDB.get());
         academicTitleHistory.setMember(memberDB.get());
 
-        return academicTitleHistoryRepository.save(academicTitleHistory);
+        val saved = academicTitleHistoryRepository.save(academicTitleHistory);
+        return academicTitleHistoryConverter.toDTO(saved);
     }
 
     @Override

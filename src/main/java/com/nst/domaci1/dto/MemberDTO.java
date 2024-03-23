@@ -1,90 +1,38 @@
 package com.nst.domaci1.dto;
 
 
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MemberDTO implements Serializable {
 
     private Long id;
 
+    @NotBlank(message = "Firstname must be entered!")
     private String firstName;
 
+    @NotBlank(message = "Lastname must be entered!")
     private String lastName;
 
-    private AcademicTitleDTO academicTitle;
+    @NotBlank(message = "Academic title must be entered!")
+    private String academicTitle;
 
-    private EducationTitleDTO educationTitle;
+    @NotBlank(message = "Education title must be entered!")
+    private String educationTitle;
 
-    private ScientificFieldDTO scientificField;
+    @NotBlank(message = "Scientific field  must be entered!")
+    private String scientificField;
 
-    private DepartmentDTO departmentDTO;
+    @NotBlank(message = "Department name must be entered!")
+    private String departmentName;
 
-    public MemberDTO() {
-    }
-
-    public MemberDTO(Long id, String firstName, String lastName, AcademicTitleDTO academicTitle, EducationTitleDTO educationTitle, ScientificFieldDTO scientificField, DepartmentDTO departmentDTO) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.academicTitle = academicTitle;
-        this.educationTitle = educationTitle;
-        this.scientificField = scientificField;
-        this.departmentDTO = departmentDTO;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public AcademicTitleDTO getAcademicTitle() {
-        return academicTitle;
-    }
-
-    public void setAcademicTitle(AcademicTitleDTO academicTitle) {
-        this.academicTitle = academicTitle;
-    }
-
-    public EducationTitleDTO getEducationTitle() {
-        return educationTitle;
-    }
-
-    public void setEducationTitle(EducationTitleDTO educationTitle) {
-        this.educationTitle = educationTitle;
-    }
-
-    public ScientificFieldDTO getScientificField() {
-        return scientificField;
-    }
-
-    public void setScientificField(ScientificFieldDTO scientificField) {
-        this.scientificField = scientificField;
-    }
-
-    public DepartmentDTO getDepartmentDTO() {
-        return departmentDTO;
-    }
-
-    public void setDepartmentDTO(DepartmentDTO departmentDTO) {
-        this.departmentDTO = departmentDTO;
-    }
 }

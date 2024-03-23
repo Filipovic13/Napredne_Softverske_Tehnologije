@@ -1,16 +1,16 @@
 package com.nst.domaci1.service;
 
-import com.nst.domaci1.domain.ScientificField;
+import com.nst.domaci1.dto.ScientificFieldDTO;
 
 import java.util.List;
 
 public interface ScientificFieldService {
 
-    ScientificField save(ScientificField scientificField) throws Exception;
+    ScientificFieldDTO save(ScientificFieldDTO scientificField) throws Exception;
 
-    List<ScientificField> getAll();
+    List<ScientificFieldDTO> getAll();
 
     void delete(String code) throws Exception;
 
-    ScientificField findByName(String scientificField) throws Exception;
+    ScientificFieldDTO findByName(String scientificField) throws Exception;
 }

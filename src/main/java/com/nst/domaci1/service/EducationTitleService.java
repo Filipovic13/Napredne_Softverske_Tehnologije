@@ -1,16 +1,16 @@
 package com.nst.domaci1.service;
 
-import com.nst.domaci1.domain.EducationTitle;
+import com.nst.domaci1.dto.EducationTitleDTO;
 
 import java.util.List;
 
 public interface EducationTitleService {
 
-    EducationTitle save(EducationTitle educationTitle) throws Exception;
+    EducationTitleDTO save(EducationTitleDTO educationTitle) throws Exception;
 
-    List<EducationTitle> getAll();
+    List<EducationTitleDTO> getAll();
 
     void delete(String code) throws Exception;
 
-    EducationTitle findByName(String educationTitle) throws Exception;
+    EducationTitleDTO findByName(String educationTitle) throws Exception;
 }

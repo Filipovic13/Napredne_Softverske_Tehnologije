@@ -4,9 +4,17 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "scientific_field_codebook")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ScientificField {
 
     @Id
@@ -16,29 +24,6 @@ public class ScientificField {
     @Column(name = "scientific_field")
     private String scientificFieldName;
 
-
-    public ScientificField() {
-
-    }
-
-    public ScientificField(String code, String scientificFieldName) {
-        this.scientificFieldCode = code;
-        this.scientificFieldName = scientificFieldName;
-    }
-
-    public String getScientificFieldCode() {
-        return scientificFieldCode;
-    }
-
-    public void setScientificFieldCode(String scientificFieldCode) {
-        this.scientificFieldCode = scientificFieldCode;
-    }
-
-    public String getScientificFieldName() {
-        return scientificFieldName;
-    }
-
-    public void setScientificFieldName(String scientificFieldName) {
-        this.scientificFieldName = scientificFieldName;
+    public void save(ScientificField scientificField) {
     }
 }

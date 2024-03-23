@@ -2,9 +2,17 @@ package com.nst.domaci1.dto;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class DepartmentDTO implements Serializable {
 
     private String name;
@@ -17,45 +25,5 @@ public class DepartmentDTO implements Serializable {
     @Schema(nullable = true)
     private Long secretaryId;
 
-    public DepartmentDTO() {
-    }
 
-    public DepartmentDTO(String name, String shortName, Long supervisorId, Long secretaryId) {
-        this.name = name;
-        this.shortName = shortName;
-        this.supervisorId = supervisorId;
-        this.secretaryId = secretaryId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getShortName() {
-        return shortName;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
-    public Long getSupervisorId() {
-        return supervisorId;
-    }
-
-    public void setSupervisorId(Long supervisorId) {
-        this.supervisorId = supervisorId;
-    }
-
-    public Long getSecretaryId() {
-        return secretaryId;
-    }
-
-    public void setSecretaryId(Long secretaryId) {
-        this.secretaryId = secretaryId;
-    }
 }

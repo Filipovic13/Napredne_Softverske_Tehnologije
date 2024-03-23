@@ -1,15 +1,19 @@
 package com.nst.domaci1.service.impl;
 
+import com.nst.domaci1.converter.impl.DepartmentConverter;
 import com.nst.domaci1.domain.Department;
 import com.nst.domaci1.domain.ManagementOfDepartmentHistory;
 import com.nst.domaci1.domain.ManagerRole;
 import com.nst.domaci1.domain.Member;
+import com.nst.domaci1.dto.DepartmentDTO;
 import com.nst.domaci1.dto.DepartmentSetManagerDTO;
 import com.nst.domaci1.repository.DepartmentRepository;
 import com.nst.domaci1.repository.ManagementOfDepartmentHistoryRepository;
 import com.nst.domaci1.repository.MemberRepository;
 import com.nst.domaci1.service.DepartmentService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,32 +21,32 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class DepartmnetServiceImpl implements DepartmentService {
 
-    private DepartmentRepository departmentRepository;
-    private MemberRepository memberRepository;
-    private ManagementOfDepartmentHistoryRepository managementOfDepartmentHistoryRepository;
+    private final DepartmentRepository departmentRepository;
+    private final MemberRepository memberRepository;
+    private final ManagementOfDepartmentHistoryRepository managementOfDepartmentHistoryRepository;
+    private final DepartmentConverter departmentConverter;
 
-    public DepartmnetServiceImpl(DepartmentRepository departmentRepository, MemberRepository memberRepository, ManagementOfDepartmentHistoryRepository managementOfDepartmentHistoryRepository) {
-        this.departmentRepository = departmentRepository;
-        this.memberRepository = memberRepository;
-        this.managementOfDepartmentHistoryRepository = managementOfDepartmentHistoryRepository;
-    }
 
     @Override
-    public Department save(Department department) throws Exception {
+    public DepartmentDTO save(DepartmentDTO dto) throws Exception {
 
-        Optional<Department> depDB = departmentRepository.findById(department.getName());
+        Optional<Department> depDB = departmentRepository.findById(dto.getName());
         if (depDB.isPresent()) {
             throw new Exception("Department with the given name already exists!");
         }
+        val department = departmentConverter.toEntity(dto);
 
-        return departmentRepository.save(department);
+        val savedDepartment = departmentRepository.save(department);
+
+        return departmentConverter.toDTO(savedDepartment);
     }
 
     @Override
-    public List<Department> getAll() {
-        return departmentRepository.findAll();
+    public List<DepartmentDTO> getAll() {
+        return departmentConverter.entitiesToDTOs(departmentRepository.findAll());
     }
 
     @Override
@@ -56,17 +60,17 @@ public class DepartmnetServiceImpl implements DepartmentService {
 
 
     @Override
-    public Department findById(String name) throws Exception {
+    public DepartmentDTO findById(String name) throws Exception {
         Optional<Department> depDB = departmentRepository.findById(name);
         if (depDB.isEmpty()) {
             throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
-        return depDB.get();
+        return departmentConverter.toDTO(depDB.get());
     }
 
     @Override
     @Transactional
-    public Department setManagerForDepartment(String departmentName, DepartmentSetManagerDTO dto) throws Exception {
+    public DepartmentDTO setManagerForDepartment(String departmentName, DepartmentSetManagerDTO dto) throws Exception {
         Optional<Department> depDB = departmentRepository.findById(departmentName);
         if (depDB.isEmpty()) {
             throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
@@ -111,7 +115,9 @@ public class DepartmnetServiceImpl implements DepartmentService {
         }
         managementOfDepartmentHistoryRepository.save(new ManagementOfDepartmentHistory(null, LocalDate.now(), null, role, memDB.get(), department));
 
-        return departmentRepository.save(department);
+        val savedDepartment =  departmentRepository.save(department);
+
+        return departmentConverter.toDTO(savedDepartment);
     }
 
 }

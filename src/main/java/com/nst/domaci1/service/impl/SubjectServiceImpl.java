@@ -1,47 +1,52 @@
 package com.nst.domaci1.service.impl;
 
+import com.nst.domaci1.converter.impl.SubjectConverter;
 import com.nst.domaci1.domain.Department;
 import com.nst.domaci1.domain.Subject;
 import com.nst.domaci1.dto.SubjectChangeEspbDTO;
-import com.nst.domaci1.dto.SubjectSaveUpdateDTO;
+import com.nst.domaci1.dto.SubjectDTO;
 import com.nst.domaci1.repository.DepartmentRepository;
 import com.nst.domaci1.repository.SubjectRepository;
 import com.nst.domaci1.service.SubjectService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class SubjectServiceImpl implements SubjectService {
 
-    private SubjectRepository subjectRepository;
-    private DepartmentRepository departmentRepository;
+    private final SubjectRepository subjectRepository;
+    private final DepartmentRepository departmentRepository;
+    private final SubjectConverter subjectConverter;
 
-    public SubjectServiceImpl(SubjectRepository subjectRepository, DepartmentRepository departmentRepository) {
-        this.subjectRepository = subjectRepository;
-        this.departmentRepository = departmentRepository;
-    }
 
     @Override
-    public Subject save(SubjectSaveUpdateDTO dto) throws Exception {
+    public SubjectDTO save(SubjectDTO dto) throws Exception {
 
         Optional<Subject> subjDB = subjectRepository.findByName(dto.getName());
         if (subjDB.isPresent()) {
             throw new Exception("Subject with the given name already exists!");
         }
 
-        Optional<Department> depDB = departmentRepository.findById(dto.getDepartmenName());
+        Optional<Department> depDB = departmentRepository.findById(dto.getDepartment());
         if (depDB.isEmpty()) {
-            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
+            throw new Exception("Department with the given name doesn't exist! " +
+                    "\nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
-        Subject newSubject = new Subject(null, dto.getName(), dto.getEspb(), depDB.get());
-        return subjectRepository.save(newSubject);
+
+        Subject newSubject = subjectConverter.toEntity(dto);
+
+        final Subject savedSubject = subjectRepository.save(newSubject);
+
+        return subjectConverter.toDTO(savedSubject);
     }
 
     @Override
-    public List<Subject> getAll() {
-        return subjectRepository.findAll();
+    public List<SubjectDTO> getAll() {
+        return subjectConverter.entitiesToDTOs(subjectRepository.findAll());
     }
 
     @Override
@@ -54,7 +59,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public Subject updateESPB(Long subjectId, SubjectChangeEspbDTO changeEspbDTO) throws Exception {
+    public SubjectDTO updateESPB(Long subjectId, SubjectChangeEspbDTO changeEspbDTO) throws Exception {
         Optional<Subject> subjDB = subjectRepository.findById(subjectId);
         if (subjDB.isEmpty()) {
             throw new Exception("Subject with the given ID doesn't exist!");
@@ -62,15 +67,17 @@ public class SubjectServiceImpl implements SubjectService {
         Subject subject = subjDB.get();
         subject.setEspb(changeEspbDTO.getEspb());
 
-        return subjectRepository.save(subject);
+        final Subject updatedSubject = subjectRepository.save(subject);
+
+        return subjectConverter.toDTO(updatedSubject);
     }
 
     @Override
-    public Subject findById(Long id) throws Exception {
+    public SubjectDTO findById(Long id) throws Exception {
         Optional<Subject> subjDB = subjectRepository.findById(id);
         if (subjDB.isEmpty()) {
             throw new Exception("Subject with the given ID doesn't exist!");
         }
-        return subjDB.get();
+        return subjectConverter.toDTO(subjDB.get());
     }
 }

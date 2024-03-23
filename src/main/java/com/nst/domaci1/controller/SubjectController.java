@@ -7,29 +7,27 @@ import com.nst.domaci1.dto.SubjectSaveUpdateDTO;
 import com.nst.domaci1.service.SubjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/subject")
 public class SubjectController {
 
-    private SubjectService subjectService;
-    private SubjectConverter subjectConverter;
+    private final SubjectService subjectService;
+    private final SubjectConverter subjectConverter;
 
-    public SubjectController(SubjectService subjectService, SubjectConverter subjectConverter) {
-        this.subjectService = subjectService;
-        this.subjectConverter = subjectConverter;
-    }
 
     @Operation(summary = "SAVE new Subject")
     @PostMapping
-    public ResponseEntity<?> save(@Valid @RequestBody SubjectSaveUpdateDTO dto) {
+    public ResponseEntity<?> save(@Valid @RequestBody SubjectDTO dto) {
         try {
-            SubjectDTO subjDTO = subjectConverter.toDTO(subjectService.save(dto));
+            SubjectDTO subjDTO = subjectService.save(dto);
             return new ResponseEntity<>(subjDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.CONFLICT);
@@ -39,7 +37,7 @@ public class SubjectController {
     @Operation(summary = "GET ALL Subjects")
     @GetMapping
     public ResponseEntity<List<SubjectDTO>> getAll() {
-        List<SubjectDTO> subjectsDTO = subjectConverter.entitiesToDTOs(subjectService.getAll());
+        List<SubjectDTO> subjectsDTO = subjectService.getAll();
         return new ResponseEntity<>(subjectsDTO, HttpStatus.OK);
     }
 
@@ -56,13 +54,13 @@ public class SubjectController {
 
     //PATCH
     @Operation(summary = "UPDATE ESPB value for Subject")
-    @PatchMapping("updateEspb/{subjectId}")
-    public ResponseEntity<?> update(@PathVariable long subjectId, @Valid @RequestBody SubjectChangeEspbDTO chnageEspbDTO) {
+    @PatchMapping("/updateEspb/{subjectId}")
+    public ResponseEntity<?> update(@PathVariable long subjectId, @Valid @RequestBody SubjectChangeEspbDTO dto) {
         try {
-            SubjectDTO subjDTO = subjectConverter.toDTO(subjectService.updateESPB(subjectId, chnageEspbDTO));
-            return new ResponseEntity<>(subjDTO, HttpStatus.OK);
+            SubjectDTO chnageEspbDTO = subjectService.updateESPB(subjectId, dto);
+            return new ResponseEntity<>(chnageEspbDTO, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);
         }
 
     }
@@ -71,7 +69,7 @@ public class SubjectController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         try {
-            SubjectDTO subjDTO = subjectConverter.toDTO(subjectService.findById(id));
+            SubjectDTO subjDTO = subjectService.findById(id);
             return new ResponseEntity<>(subjDTO, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);

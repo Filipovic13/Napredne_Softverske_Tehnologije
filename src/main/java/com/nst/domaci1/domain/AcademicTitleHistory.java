@@ -1,11 +1,18 @@
 package com.nst.domaci1.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
-@Table
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AcademicTitleHistory {
 
     @Id
@@ -30,64 +37,4 @@ public class AcademicTitleHistory {
     @JoinColumn(name = "member_id", referencedColumnName = "id")
     private Member member;
 
-
-    public AcademicTitleHistory() {
-    }
-
-    public AcademicTitleHistory(Long id, LocalDate startDate, LocalDate endDate, AcademicTitle academicTitle, ScientificField scientificField, Member member) {
-        this.id = id;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.academicTitle = academicTitle;
-        this.scientificField = scientificField;
-        this.member = member;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-    public AcademicTitle getAcademicTitle() {
-        return academicTitle;
-    }
-
-    public void setAcademicTitle(AcademicTitle academicTitle) {
-        this.academicTitle = academicTitle;
-    }
-
-    public ScientificField getScientificField() {
-        return scientificField;
-    }
-
-    public void setScientificField(ScientificField scientificField) {
-        this.scientificField = scientificField;
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
-    }
 }

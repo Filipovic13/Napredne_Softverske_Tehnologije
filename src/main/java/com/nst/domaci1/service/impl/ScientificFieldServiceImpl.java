@@ -1,41 +1,48 @@
 package com.nst.domaci1.service.impl;
 
+import com.nst.domaci1.converter.impl.ScientificFieldConverter;
 import com.nst.domaci1.domain.ScientificField;
+import com.nst.domaci1.dto.ScientificFieldDTO;
 import com.nst.domaci1.repository.ScientificFieldRepository;
 import com.nst.domaci1.service.ScientificFieldService;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+
+@RequiredArgsConstructor
 @Service
 public class ScientificFieldServiceImpl implements ScientificFieldService {
 
-    private ScientificFieldRepository scientificFieldRepository;
+    private final ScientificFieldRepository scientificFieldRepository;
+    private final ScientificFieldConverter scientificFieldConverter;
 
-    public ScientificFieldServiceImpl(ScientificFieldRepository scientificFieldRepository) {
-        this.scientificFieldRepository = scientificFieldRepository;
-    }
 
     @Override
-    public ScientificField save(ScientificField scientificField) throws Exception {
+    public ScientificFieldDTO save(ScientificFieldDTO dto) throws Exception {
 
-        Optional<ScientificField> scFieldCodeDB = scientificFieldRepository.findById(scientificField.getScientificFieldCode());
+        Optional<ScientificField> scFieldCodeDB = scientificFieldRepository.findById(dto.getCode());
         if (scFieldCodeDB.isPresent()) {
             throw new Exception("Scientific Field with this ID - code already exists!");
         }
 
-        Optional<ScientificField> scFieldNameDB = scientificFieldRepository.findByScientificFieldName(scientificField.getScientificFieldName());
+        Optional<ScientificField> scFieldNameDB = scientificFieldRepository.findByScientificFieldName(dto.getName());
         if (scFieldNameDB.isPresent()) {
             throw new Exception("Scientific Field with this name already exists!");
         }
+        val scientificField = scientificFieldConverter.toEntity(dto);
 
-        return scientificFieldRepository.save(scientificField);
+        val saved = scientificFieldRepository.save(scientificField);
+
+        return scientificFieldConverter.toDTO(saved);
     }
 
     @Override
-    public List<ScientificField> getAll() {
-        return scientificFieldRepository.findAll();
+    public List<ScientificFieldDTO> getAll() {
+        return scientificFieldConverter.entitiesToDTOs(scientificFieldRepository.findAll());
     }
 
     @Override
@@ -48,11 +55,11 @@ public class ScientificFieldServiceImpl implements ScientificFieldService {
     }
 
     @Override
-    public ScientificField findByName(String scientificField) throws Exception {
+    public ScientificFieldDTO findByName(String scientificField) throws Exception {
         Optional<ScientificField> scFieldDB = scientificFieldRepository.findByScientificFieldName(scientificField);
         if (scFieldDB.isEmpty()) {
             throw new Exception("Scientific Filed with the given name doesn't exist!");
         }
-        return scFieldDB.get();
+        return scientificFieldConverter.toDTO(scFieldDB.get());
     }
 }
