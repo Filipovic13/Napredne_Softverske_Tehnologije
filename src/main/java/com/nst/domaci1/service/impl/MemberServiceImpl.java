@@ -1,12 +1,15 @@
 package com.nst.domaci1.service.impl;
 
+import com.nst.domaci1.converter.impl.MemberConverter;
 import com.nst.domaci1.domain.*;
 import com.nst.domaci1.dto.MemberChangeAllScienceFieldsDTO;
 import com.nst.domaci1.dto.MemberChangeDepartmentDTO;
-import com.nst.domaci1.dto.MemberSaveUpdateDTO;
+import com.nst.domaci1.dto.MemberDTO;
 import com.nst.domaci1.repository.*;
 import com.nst.domaci1.service.MemberService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,71 +21,81 @@ import org.springframework.data.domain.Pageable;
 
 
 @Service
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    private MemberRepository memberRepository;
-    private DepartmentRepository departmentRepository;
-    private AcademicTitleHistoryRepository academicTitleHistoryRepository;
-    private AcademicTitleRepository academicTitleRepository;
-    private EducationTitleRepository educationTitleRepository;
-    private ScientificFieldRepository scientificFieldRepository;
-
-    public MemberServiceImpl(MemberRepository memberRepository, DepartmentRepository departmentRepository, AcademicTitleHistoryRepository academicTitleHistoryRepository, AcademicTitleRepository academicTitleRepository, EducationTitleRepository educationTitleRepository, ScientificFieldRepository scientificFieldRepository) {
-        this.memberRepository = memberRepository;
-        this.departmentRepository = departmentRepository;
-        this.academicTitleHistoryRepository = academicTitleHistoryRepository;
-        this.academicTitleRepository = academicTitleRepository;
-        this.educationTitleRepository = educationTitleRepository;
-        this.scientificFieldRepository = scientificFieldRepository;
-    }
+    private final MemberRepository memberRepository;
+    private final DepartmentRepository departmentRepository;
+    private final AcademicTitleHistoryRepository academicTitleHistoryRepository;
+    private final AcademicTitleRepository academicTitleRepository;
+    private final EducationTitleRepository educationTitleRepository;
+    private final ScientificFieldRepository scientificFieldRepository;
+    private final MemberConverter memberConverter;
 
     @Override
     @Transactional
-    public Member save(MemberSaveUpdateDTO dto) throws Exception {
+    public MemberDTO save(MemberDTO dto) throws Exception {
 
-        Optional<AcademicTitle> academicTitleDB = academicTitleRepository.findByAcademicTitleName(dto.getAcademicTitle());
+        Optional<AcademicTitle> academicTitleDB = academicTitleRepository
+                .findByAcademicTitleName(dto.getAcademicTitle());
+
         if (academicTitleDB.isEmpty()) {
-            throw new Exception("Academic Title doesn't exist!\n Enter one of the values that exist in database: \n " + academicTitleRepository.findAllAcademicTitleNames());
+            throw new Exception("Academic Title doesn't exist!\n" +
+                    " Enter one of the values that exist in database: \n " +
+                    academicTitleRepository.findAllAcademicTitleNames());
         }
 
-        Optional<EducationTitle> educationTitleDB = educationTitleRepository.findByEducationTitleName(dto.getEducationTitle());
+        Optional<EducationTitle> educationTitleDB = educationTitleRepository
+                .findByEducationTitleName(dto.getEducationTitle());
+
         if (educationTitleDB.isEmpty()) {
-            throw new Exception("Education Title doesn't exist!\n Enter one of the values that exist in database: \n " + educationTitleRepository.findAllEducationTitlesNames());
+            throw new Exception("Education Title doesn't exist!\n" +
+                    " Enter one of the values that exist in database: \n " +
+                    educationTitleRepository.findAllEducationTitlesNames());
         }
 
-        Optional<ScientificField> scientificFieldDB = scientificFieldRepository.findByScientificFieldName(dto.getScientificField());
+        Optional<ScientificField> scientificFieldDB = scientificFieldRepository
+                .findByScientificFieldName(dto.getScientificField());
+
         if (scientificFieldDB.isEmpty()) {
-            throw new Exception("Scientific Field doesn't exist!\n Enter one of the values that exist in database: \n " + scientificFieldRepository.findAllScientificFieldNames());
+            throw new Exception("Scientific Field doesn't exist!\n " +
+                    "Enter one of the values that exist in database: \n " +
+                    scientificFieldRepository.findAllScientificFieldNames());
         }
 
         Optional<Department> depDB = departmentRepository.findById(dto.getDepartmentName());
         if (depDB.isEmpty()) {
-            throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
+            throw new Exception("Department with the given name doesn't exist! \n" +
+                    "Enter one of next values: \n"
+                    + departmentRepository.findAllNames());
         }
 
-        Member member = new Member();
-        member.setFirstName(dto.getFirstName());
-        member.setLastName(dto.getLastName());
-        member.setAcademicTitle(academicTitleDB.get());
-        member.setEducationTitle(educationTitleDB.get());
-        member.setScientificField(scientificFieldDB.get());
-        member.setDepartment(depDB.get());
+        final Member member = new Member(
+                null,
+                dto.getFirstName(),
+                dto.getLastName(),
+                academicTitleDB.get(),
+                educationTitleDB.get(),
+                scientificFieldDB.get(),
+                depDB.get()
+        );
 
-        Member savedMember = memberRepository.save(member);
+        final Member savedMember = memberRepository.save(member);
 
-        academicTitleHistoryRepository.save(new AcademicTitleHistory(null, LocalDate.now(), null, academicTitleDB.get(), scientificFieldDB.get(), savedMember));
+        academicTitleHistoryRepository.save(new AcademicTitleHistory(null, LocalDate.now(), null,
+                academicTitleDB.get(), scientificFieldDB.get(), savedMember));
 
-        return savedMember;
+        return memberConverter.toDTO(savedMember);
     }
 
     @Override
-    public List<Member> getAll() {
-        return memberRepository.findAll();
+    public List<MemberDTO> getAll() {
+        return memberConverter.entitiesToDTOs(memberRepository.findAll());
     }
 
     @Override
-    public Page<Member> getAll(Pageable pageable) {
-        return memberRepository.findAll(pageable);
+    public Page<MemberDTO> getAll(Pageable pageable) {
+        return memberRepository.findAll(pageable).map(memberConverter::toDTO);
     }
 
     @Transactional
@@ -93,7 +106,9 @@ public class MemberServiceImpl implements MemberService {
             throw new Exception("Member with the given ID doesn't exist!");
         }
 
-        List<AcademicTitleHistory> academicTitleHistories = academicTitleHistoryRepository.findAllByMemberId(id);
+        List<AcademicTitleHistory> academicTitleHistories = academicTitleHistoryRepository
+                .findAllByMemberId(id);
+
         for (AcademicTitleHistory history : academicTitleHistories) {
             academicTitleHistoryRepository.delete(history);
         }
@@ -102,7 +117,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Member updateScienceFields(Long memberId, MemberChangeAllScienceFieldsDTO changeScienceFieldsDTO) throws Exception {
+    public MemberDTO updateScienceFields(Long memberId, MemberChangeAllScienceFieldsDTO changeScienceFieldsDTO) throws Exception {
 
         Optional<Member> memDB = memberRepository.findById(memberId);
         if (memDB.isEmpty()) {
@@ -154,12 +169,12 @@ public class MemberServiceImpl implements MemberService {
 
         academicTitleHistoryRepository.save(new AcademicTitleHistory(null, startDate, null, academicTitleDB.get(), scientificFieldDB.get(), savedMember));
 
-        return savedMember;
+        return memberConverter.toDTO(savedMember);
     }
 
     @Override
     @Transactional
-    public Member updateDepartment(Long memberId, MemberChangeDepartmentDTO changeDepartmentDTO) throws Exception {
+    public MemberDTO updateDepartment(Long memberId, MemberChangeDepartmentDTO changeDepartmentDTO) throws Exception {
 
         Optional<Member> memDB = memberRepository.findById(memberId);
         if (memDB.isEmpty()) {
@@ -174,16 +189,18 @@ public class MemberServiceImpl implements MemberService {
         Member member = memDB.get();
         member.setDepartment(depDB.get());
 
-        return memberRepository.save(member);
+        val savedMember = memberRepository.save(member);
+
+        return memberConverter.toDTO(savedMember);
     }
 
     @Override
-    public Member findById(Long id) throws Exception {
+    public MemberDTO findById(Long id) throws Exception {
         Optional<Member> memDB = memberRepository.findById(id);
         if (memDB.isEmpty()) {
             throw new Exception("Member with the given ID doesn't exist!");
         }
-        return memDB.get();
+        return memberConverter.toDTO(memDB.get());
     }
 
 

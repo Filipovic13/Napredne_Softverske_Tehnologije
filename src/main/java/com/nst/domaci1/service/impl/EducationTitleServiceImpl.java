@@ -1,40 +1,47 @@
 package com.nst.domaci1.service.impl;
 
+import com.nst.domaci1.converter.impl.EducationTitleConverter;
 import com.nst.domaci1.domain.EducationTitle;
+import com.nst.domaci1.dto.EducationTitleDTO;
 import com.nst.domaci1.repository.EducationTitleRepository;
 import com.nst.domaci1.service.EducationTitleService;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class EducationTitleServiceImpl implements EducationTitleService {
 
-    private EducationTitleRepository educationTitleRepository;
+    private final EducationTitleRepository educationTitleRepository;
+    private final EducationTitleConverter educationTitleConverter;
 
-    public EducationTitleServiceImpl(EducationTitleRepository educationTitleRepository) {
-        this.educationTitleRepository = educationTitleRepository;
-    }
 
     @Override
-    public EducationTitle save(EducationTitle educationTitle) throws Exception {
-        Optional<EducationTitle> edTitleCodeDB = educationTitleRepository.findById(educationTitle.getEducationTitleCode());
+    public EducationTitleDTO save(EducationTitleDTO dto) throws Exception {
+        Optional<EducationTitle> edTitleCodeDB = educationTitleRepository.findById(dto.getCode());
         if (edTitleCodeDB.isPresent()) {
             throw new Exception("Education Title with this ID - code already exists!");
         }
 
-        Optional<EducationTitle> edTitleNameDB = educationTitleRepository.findByEducationTitleName(educationTitle.getEducationTitleName());
+        Optional<EducationTitle> edTitleNameDB = educationTitleRepository.findByEducationTitleName(dto.getName());
         if (edTitleNameDB.isPresent()) {
             throw new Exception("Education Title with this name already exists!");
         }
 
-        return educationTitleRepository.save(educationTitle);
+        val educationTitle = educationTitleConverter.toEntity(dto);
+
+        val savedEdicationTitle = educationTitleRepository.save(educationTitle);
+
+        return educationTitleConverter.toDTO(savedEdicationTitle);
     }
 
     @Override
-    public List<EducationTitle> getAll() {
-        return educationTitleRepository.findAll();
+    public List<EducationTitleDTO> getAll() {
+        return educationTitleConverter.entitiesToDTOs(educationTitleRepository.findAll());
     }
 
     @Override
@@ -47,11 +54,11 @@ public class EducationTitleServiceImpl implements EducationTitleService {
     }
 
     @Override
-    public EducationTitle findByName(String educationTitle) throws Exception {
+    public EducationTitleDTO findByName(String educationTitle) throws Exception {
         Optional<EducationTitle> edTitleDB = educationTitleRepository.findByEducationTitleName(educationTitle);
         if (edTitleDB.isEmpty()) {
             throw new Exception("Education Title with the given name doesn't exist!");
         }
-        return edTitleDB.get();
+        return educationTitleConverter.toDTO(edTitleDB.get());
     }
 }

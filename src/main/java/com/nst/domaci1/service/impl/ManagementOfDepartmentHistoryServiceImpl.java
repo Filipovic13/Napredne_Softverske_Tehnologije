@@ -1,51 +1,56 @@
 package com.nst.domaci1.service.impl;
 
+import com.nst.domaci1.converter.impl.ManagementOfDepartmentHistoryConverter;
 import com.nst.domaci1.domain.Department;
 import com.nst.domaci1.domain.ManagementOfDepartmentHistory;
 import com.nst.domaci1.domain.ManagerRole;
 import com.nst.domaci1.domain.Member;
-import com.nst.domaci1.dto.ManagementOfDepartmentHistorySaveUpdateDTO;
+import com.nst.domaci1.dto.ManagementOfDepartmentHistoryDTO;
 import com.nst.domaci1.repository.DepartmentRepository;
 import com.nst.domaci1.repository.ManagementOfDepartmentHistoryRepository;
 import com.nst.domaci1.repository.MemberRepository;
 import com.nst.domaci1.service.ManagementOfDepartmentHistoryService;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDepartmentHistoryService {
 
-    private ManagementOfDepartmentHistoryRepository managementOfDepartmentHistoryRepository;
-    private DepartmentRepository departmentRepository;
-    private MemberRepository memberRepository;
-
-    public ManagementOfDepartmentHistoryServiceImpl(ManagementOfDepartmentHistoryRepository managementOfDepartmentHistoryRepository, DepartmentRepository departmentRepository, MemberRepository memberRepository) {
-        this.managementOfDepartmentHistoryRepository = managementOfDepartmentHistoryRepository;
-        this.departmentRepository = departmentRepository;
-        this.memberRepository = memberRepository;
-    }
-
+    private final ManagementOfDepartmentHistoryRepository managementOfDepartmentHistoryRepository;
+    private final DepartmentRepository departmentRepository;
+    private final MemberRepository memberRepository;
+    private final ManagementOfDepartmentHistoryConverter managementOfDepartmentHistoryConverter;
 
 
     @Override
-    public List<ManagementOfDepartmentHistory> findAllByDepartmentName(String departmentName) throws Exception {
+    public List<ManagementOfDepartmentHistoryDTO> findAllByDepartmentName(String departmentName) throws Exception {
         Optional<Department> depDB = departmentRepository.findById(departmentName);
         if (depDB.isEmpty()) {
             throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
         }
-        return managementOfDepartmentHistoryRepository.findByDepartmentOrderByStartDateDesc(depDB.get());
+
+        val allByDepartment = managementOfDepartmentHistoryRepository.
+                findByDepartmentOrderByStartDateDesc(depDB.get());
+
+        return managementOfDepartmentHistoryConverter.entitiesToDTOs(allByDepartment);
     }
 
     @Override
-    public List<ManagementOfDepartmentHistory> findAllByMember(Long memberId) throws Exception {
+    public List<ManagementOfDepartmentHistoryDTO> findAllByMember(Long memberId) throws Exception {
         Optional<Member> memDB = memberRepository.findById(memberId);
         if (memDB.isEmpty()) {
             throw new Exception("Member with the given ID doesn't exist!");
         }
 
-        return managementOfDepartmentHistoryRepository.findByMemberOrderByStartDateDesc(memDB.get());
+        val allByMember = managementOfDepartmentHistoryRepository.
+                findByMemberOrderByStartDateDesc(memDB.get());
+
+        return managementOfDepartmentHistoryConverter.entitiesToDTOs(allByMember);
     }
 
     @Override
@@ -58,16 +63,16 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
     }
 
     @Override
-    public ManagementOfDepartmentHistory findById(Long managementOfDepartmentHistoryId) throws Exception {
-        Optional<ManagementOfDepartmentHistory> entity = managementOfDepartmentHistoryRepository.findById(managementOfDepartmentHistoryId);
-        if (entity.isEmpty()) {
+    public ManagementOfDepartmentHistoryDTO findById(Long managementOfDepartmentHistoryId) throws Exception {
+        Optional<ManagementOfDepartmentHistory> mngmnt = managementOfDepartmentHistoryRepository.findById(managementOfDepartmentHistoryId);
+        if (mngmnt.isEmpty()) {
             throw new Exception("Management Of DepartmentHistory with the given ID doesn't exist!");
         }
-        return entity.get();
+        return managementOfDepartmentHistoryConverter.toDTO(mngmnt.get());
     }
 
     @Override
-    public ManagementOfDepartmentHistory getLatestMangerOfDepartment(String departmentName, String managerRole) throws Exception {
+    public ManagementOfDepartmentHistoryDTO getLatestMangerOfDepartment(String departmentName, String managerRole) throws Exception {
         Optional<Department> depDb = departmentRepository.findById(departmentName);
         if (depDb.isEmpty()) {
             throw new Exception("Department with the given name doesn't exist! \nEnter one of next values: \n" + departmentRepository.findAllNames());
@@ -84,21 +89,21 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
         }
 
         Optional<ManagementOfDepartmentHistory> lastEndDateNull = managementOfDepartmentHistoryRepository.findFirstByDepartmentAndManagerRoleAndEndDateIsNullOrderByStartDateDesc(department, chosenRole);
-        if (lastEndDateNull.isPresent()){
-            return lastEndDateNull.get();
-        }else{
+        if (lastEndDateNull.isPresent()) {
+            return managementOfDepartmentHistoryConverter.toDTO(lastEndDateNull.get());
+        } else {
             Optional<ManagementOfDepartmentHistory> lastManager = managementOfDepartmentHistoryRepository.findFirstByDepartmentAndManagerRoleOrderByStartDateDesc(department, chosenRole);
             if (lastManager.isEmpty()) {
                 throw new Exception("There is no " + chosenRole.toString() + " for department - " + departmentName);
             }
-            return lastManager.get();
+            return managementOfDepartmentHistoryConverter.toDTO(lastManager.get());
         }
     }
 
     @Override
-    public ManagementOfDepartmentHistory save(ManagementOfDepartmentHistorySaveUpdateDTO dto) throws Exception {
+    public ManagementOfDepartmentHistoryDTO save(ManagementOfDepartmentHistoryDTO dto) throws Exception {
 
-        if (dto.getEndDate().isBefore(dto.getStartDate())){
+        if (dto.getEndDate().isBefore(dto.getStartDate())) {
             throw new Exception("End date must be after start date!");
         }
 
@@ -122,21 +127,22 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
         }
 
 
-        ManagementOfDepartmentHistory mngmnt = new ManagementOfDepartmentHistory(null, dto.getStartDate(), dto.getEndDate(), chosenRole, memDB.get(), depDB.get());
-        return managementOfDepartmentHistoryRepository.save(mngmnt);
+        val mngmnt = new ManagementOfDepartmentHistory(null, dto.getStartDate(), dto.getEndDate(), chosenRole, memDB.get(), depDB.get());
+        val savedMngmnt =  managementOfDepartmentHistoryRepository.save(mngmnt);
+
+        return managementOfDepartmentHistoryConverter.toDTO(savedMngmnt);
     }
 
 
-
     @Override
-    public ManagementOfDepartmentHistory update(Long managementOfDepartmentHistoryId, ManagementOfDepartmentHistorySaveUpdateDTO dto) throws Exception {
+    public ManagementOfDepartmentHistoryDTO update(Long managementOfDepartmentHistoryId, ManagementOfDepartmentHistoryDTO dto) throws Exception {
 
         Optional<ManagementOfDepartmentHistory> mngmntDB = managementOfDepartmentHistoryRepository.findById(managementOfDepartmentHistoryId);
-        if (mngmntDB.isEmpty()){
+        if (mngmntDB.isEmpty()) {
             throw new Exception("Management Of Department History with the given ID doesn't exist!");
         }
 
-        if (dto.getEndDate().isBefore(dto.getStartDate())){
+        if (dto.getEndDate() != null && dto.getEndDate().isBefore(dto.getStartDate())) {
             throw new Exception("End date must be after start date!");
         }
 
@@ -161,14 +167,17 @@ public class ManagementOfDepartmentHistoryServiceImpl implements ManagementOfDep
         }
 
 
-        ManagementOfDepartmentHistory mngmnt = mngmntDB.get();
-        mngmnt.setStartDate(dto.getStartDate());
-        mngmnt.setEndDate(dto.getEndDate());
-        mngmnt.setManagerRole(chosenRole);
-        mngmnt.setMember(memDB.get());
-        mngmnt.setDepartment(depDB.get());
+        ManagementOfDepartmentHistory mngmnt = managementOfDepartmentHistoryConverter.toEntity(dto);
+//        ManagementOfDepartmentHistory mngmnt = mngmntDB.get();
+//        mngmnt.setStartDate(dto.getStartDate());
+//        mngmnt.setEndDate(dto.getEndDate());
+//        mngmnt.setManagerRole(chosenRole);
+//        mngmnt.setMember(memDB.get());
+//        mngmnt.setDepartment(depDB.get());
 
-        return managementOfDepartmentHistoryRepository.save(mngmnt);
+        val savedMngmnt = managementOfDepartmentHistoryRepository.save(mngmnt);
+
+        return managementOfDepartmentHistoryConverter.toDTO(savedMngmnt);
     }
 
 

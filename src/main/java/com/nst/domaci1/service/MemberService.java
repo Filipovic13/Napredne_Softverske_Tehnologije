@@ -1,9 +1,8 @@
 package com.nst.domaci1.service;
 
-import com.nst.domaci1.domain.Member;
 import com.nst.domaci1.dto.MemberChangeAllScienceFieldsDTO;
 import com.nst.domaci1.dto.MemberChangeDepartmentDTO;
-import com.nst.domaci1.dto.MemberSaveUpdateDTO;
+import com.nst.domaci1.dto.MemberDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,18 +10,18 @@ import java.util.List;
 
 public interface MemberService {
 
-    Member save(MemberSaveUpdateDTO dto) throws Exception;
+    MemberDTO save(MemberDTO dto) throws Exception;
 
-    List<Member> getAll();
+    List<MemberDTO> getAll();
 
-    Page<Member> getAll(Pageable pageable);
+    Page<MemberDTO> getAll(Pageable pageable);
 
     void delete(Long id) throws Exception;
 
-    Member updateScienceFields(Long memberId, MemberChangeAllScienceFieldsDTO changeScienceFieldsDTO) throws Exception;
+    MemberDTO updateScienceFields(Long memberId, MemberChangeAllScienceFieldsDTO changeScienceFieldsDTO) throws Exception;
 
-    Member updateDepartment(Long memberId, MemberChangeDepartmentDTO changeDepartmentDTO) throws Exception;
+    MemberDTO updateDepartment(Long memberId, MemberChangeDepartmentDTO changeDepartmentDTO) throws Exception;
 
-    Member findById(Long id) throws Exception;
+    MemberDTO findById(Long id) throws Exception;
 
 }

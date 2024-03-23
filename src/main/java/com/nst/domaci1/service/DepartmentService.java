@@ -1,19 +1,19 @@
 package com.nst.domaci1.service;
 
-import com.nst.domaci1.domain.Department;
+import com.nst.domaci1.dto.DepartmentDTO;
 import com.nst.domaci1.dto.DepartmentSetManagerDTO;
 
 import java.util.List;
 
 public interface DepartmentService {
 
-    Department save(Department department) throws Exception;
+    DepartmentDTO save(DepartmentDTO department) throws Exception;
 
-    List<Department> getAll();
+    List<DepartmentDTO> getAll();
 
     void delete(String name) throws Exception;
 
-    Department findById(String name) throws Exception;
+    DepartmentDTO findById(String name) throws Exception;
 
-    Department setManagerForDepartment(String departmentName, DepartmentSetManagerDTO dto) throws Exception;
+    DepartmentDTO setManagerForDepartment(String departmentName, DepartmentSetManagerDTO dto) throws Exception;
 }

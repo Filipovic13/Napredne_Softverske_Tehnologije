@@ -1,7 +1,6 @@
 package com.nst.domaci1.service;
 
-import com.nst.domaci1.domain.AcademicTitleHistory;
-import com.nst.domaci1.dto.AcademicTitleHistorySaveUpdateDTO;
+import com.nst.domaci1.dto.AcademicTitleHistoryDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -9,15 +8,15 @@ import java.util.List;
 
 public interface AcademicTitleHistoryService {
 
-    List<AcademicTitleHistory> getAll();
+    List<AcademicTitleHistoryDTO> getAll();
 
-    Page<AcademicTitleHistory> getALl(Pageable pageable);
+    Page<AcademicTitleHistoryDTO> getALl(Pageable pageable);
 
-    List<AcademicTitleHistory> findAllByMemberId(Long id) throws Exception;
+    List<AcademicTitleHistoryDTO> findAllByMemberId(Long id) throws Exception;
 
-    AcademicTitleHistory save(AcademicTitleHistorySaveUpdateDTO dto) throws Exception;
+    AcademicTitleHistoryDTO save(AcademicTitleHistoryDTO dto) throws Exception;
 
-    AcademicTitleHistory updateAcademicTitleHistory(Long academicTitleHistoryId, AcademicTitleHistorySaveUpdateDTO dto) throws Exception;
+    AcademicTitleHistoryDTO updateAcademicTitleHistory(Long academicTitleHistoryId, AcademicTitleHistoryDTO dto) throws Exception;
 
     void delete(Long academicTitleHistoryId) throws Exception;
 }

@@ -1,35 +1,31 @@
 package com.nst.domaci1.controller;
 
-import com.nst.domaci1.converter.impl.AcademicTitleConverter;
-import com.nst.domaci1.domain.AcademicTitle;
+
 import com.nst.domaci1.dto.AcademicTitleDTO;
 import com.nst.domaci1.service.AcademicTitleService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/academicTitle")
 public class AcademicTitleController {
 
-    private AcademicTitleService academicTitleService;
-    private AcademicTitleConverter academicTitleConverter;
+    private final AcademicTitleService academicTitleService;
 
-    public AcademicTitleController(AcademicTitleService academicTitleService, AcademicTitleConverter academicTitleConverter) {
-        this.academicTitleService = academicTitleService;
-        this.academicTitleConverter = academicTitleConverter;
-    }
 
     @Operation(summary = "SAVE new Academic Title")
     @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody AcademicTitleDTO academicTitleDTO) {
-        AcademicTitle at = academicTitleConverter.toEntity(academicTitleDTO);
         try {
-            AcademicTitleDTO atDTO = academicTitleConverter.toDTO(academicTitleService.save(at));
+            AcademicTitleDTO atDTO = academicTitleService.save(academicTitleDTO);
             return new ResponseEntity<>(atDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.CONFLICT);
@@ -40,7 +36,7 @@ public class AcademicTitleController {
     @Operation(summary = "GET ALL Academic Titles")
     @GetMapping
     public ResponseEntity<List<AcademicTitleDTO>> getAll() {
-        List<AcademicTitleDTO> list = academicTitleConverter.entitiesToDTOs(academicTitleService.getAll());
+        List<AcademicTitleDTO> list = academicTitleService.getAll();
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -58,9 +54,9 @@ public class AcademicTitleController {
 
     @Operation(summary = "GET Academic Title by it's name")
     @GetMapping("/{academicTitle}")
-    public ResponseEntity<?> finfByName(@PathVariable String academicTitle) {
+    public ResponseEntity<?> findByName(@PathVariable String academicTitle) {
         try {
-            AcademicTitleDTO acDTO = academicTitleConverter.toDTO(academicTitleService.findByName(academicTitle));
+            AcademicTitleDTO acDTO = academicTitleService.findByName(academicTitle);
             return new ResponseEntity<>(acDTO, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(">>> " + e.getMessage(), HttpStatus.NOT_FOUND);
