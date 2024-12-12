@@ -1,0 +1,58 @@
+<!-- table.component.html -->
+<div class="container mt-5">
+  <!-- Dugme za dodavanje novog entiteta, koje je unutar tabele -->
+  <button type="button" class="btn btn-info mb-3" (click)="onAddnew()">
+    Add New
+  </button>
+
+  <!-- Tabela sa podacima -->
+  <table class="table table-striped">
+    <thead class="thead-light">
+      <tr>
+        <!-- Dinamičko prikazivanje kolona -->
+        <th *ngFor="let col of columns">{{ col.header }}</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of data">
+        <td *ngFor="let col of columns">
+          <!-- Dinamičko prikazivanje vrednosti u tabeli -->
+          <ng-container *ngIf="col.editable; else staticCell">
+            <input
+              type="text"
+              [(ngModel)]="row[col.key]"
+              class="form-control"
+              [name]="col.key"
+            />
+          </ng-container>
+          <ng-template #staticCell>{{ row[col.key] }}</ng-template>
+        </td>
+        <td>
+          <div class="table-buttons">
+            <!-- Dugme za editovanje -->
+            <button
+              *ngIf="isEditable"
+              class="btn btn-primary btn-sm"
+              (click)="onEdit(row)"
+            >
+              Edit
+            </button>
+            <!-- Dugme za update polja -->
+            <button
+              class="btn btn-secondary btn-sm"
+              (click)="onUpdateField(row)"
+              [disabled]="isUpdatable"
+            >
+              Update field
+            </button>
+            <!-- Dugme za brisanje -->
+            <button class="btn btn-danger btn-sm" (click)="onDelete(row.id)">
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

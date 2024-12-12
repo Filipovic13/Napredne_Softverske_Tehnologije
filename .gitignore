@@ -1,8 +1,12 @@
-HELP.md
-target/
+# Ignorišemo target folder, ali sada u backend folderu
+backend/target/
+
+# Ignorišemo Maven wrapper, ali omogućavamo maven-wrapper.jar
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+
+# Ignorišemo build foldere unutar src direktorijuma
+!**/src/main/**/build/
+!**/src/test/**/build/
 
 ### STS ###
 .apt_generated

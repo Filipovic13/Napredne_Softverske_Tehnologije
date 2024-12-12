@@ -1,0 +1,9 @@
+<app-table
+  [isEditable]="isEditable"
+  [columns]="columns"
+  [data]="subjects"
+  [model]="model"
+  (delete)="deleteSubject($event)"
+  (add)="addNewSubject($event)"
+  (update)="updateESPB($event)"
+></app-table>
