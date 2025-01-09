@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MetaData } from 'src/app/core/models/meta.data.interface';
 import { Subject } from 'src/app/core/models/subject.model';
+import { DepartmentService } from 'src/app/core/services/department/department.service';
 import { SubjectService } from 'src/app/core/services/subject/subject.service';
+import { ModalComponent } from 'src/app/shared/modal/modal.component';
 
 @Component({
   selector: 'app-subject-list',
@@ -9,45 +12,66 @@ import { SubjectService } from 'src/app/core/services/subject/subject.service';
   styleUrls: ['./subject-list.component.css'],
 })
 export class SubjectListComponent implements OnInit {
-  columns = [
-    { header: 'Subject Name', key: 'name' },
-    { header: 'ESPB Points', key: 'espb', editable: true },
-    { header: 'Department Name', key: 'department' },
+  metaData: MetaData[] = [
+    { label: 'Subject Name', key: 'name', inputType: 'text' },
+    { label: 'ESPB Points', key: 'espb', inputType: 'number', editable: true },
+    {
+      label: 'Department Name',
+      key: 'department',
+      inputType: 'dropdown',
+      options: [], // Ovo će biti popunjeno dinamički},
+    },
   ];
 
   model: Subject = new Subject(0, '', 0, '');
   subjects: Subject[] = [];
-  isEditable: boolean = true;
+  isEditable: boolean = false;
 
-  constructor(private subjectService: SubjectService) {}
+  constructor(
+    private subjectService: SubjectService,
+    private departmentService: DepartmentService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     // Pretplaćujemo se na tok podataka
     this.subjectService.subjects$.subscribe((data) => {
       this.subjects = data;
-      console.log('Subjects loaded:', this.subjects);
     });
 
     // Osiguravamo da se podaci učitaju ako još nisu učitani
     this.subjectService.getSubjectsIfNeeded();
+
+    this.loadDepartmentOptions();
   }
 
-  // Dodavanje novog predmeta
-  addNewSubject(newSubject: Subject): void {
-    this.subjectService.createSubject(newSubject).subscribe({
-      next: () => {
-        console.log('Subject created successfully.');
-        alert('Subject created successfully!');
-      },
-      error: (err) => {
-        console.error('Error creating subject:', err);
-        alert(`Error creating subject: ${err.message}`);
-      },
+  private loadDepartmentOptions() {
+    this.departmentService.getDepartments().subscribe((departments) => {
+      // Mapiraj `departments` u format `{ label: string; value: string }`
+      this.metaData[2].options = departments.map((dept) => ({
+        label: dept.name, // Prikaz (ime)
+        value: dept.name, // Vrednost (takođe ime)
+      }));
+    });
+  }
+
+  addNewSubject(): void {
+    const dialogRef = this.dialog.open(ModalComponent, {
+      data: { columns: this.metaData, data: this.model, isEdit: false },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.subjectService.createSubject(result).subscribe(() => {
+          alert('Subject created successfully!');
+        });
+      }
     });
   }
 
   // Brisanje predmeta
-  deleteSubject(id: number): void {
+  deleteSubject(row: any): void {
+    const id = row.id;
     if (confirm('Are you sure you want to delete this subject?')) {
       this.subjectService.deleteSubject(id).subscribe({
         next: () => {
@@ -64,26 +88,12 @@ export class SubjectListComponent implements OnInit {
     }
   }
 
-  // Ažuriranje polja (npr. ESPB)
-  updateESPB(updatedData: { id: number; key: string; value: any }): void {
-    const { id, key, value } = updatedData;
-
-    if (key === 'espb') {
-      this.subjectService.updateEspb(id, value).subscribe({
-        next: (response) => {
-          console.log(`Field "${key}" updated successfully:`, response);
-          alert(`Field ${key} updated successfully to ${value}`);
-          this.subjects = this.subjects.map((subject) =>
-            subject.id === id ? { ...subject, [key]: value } : subject
-          );
-        },
-        error: (err) => {
-          console.error(`Error updating field "${key}":`, err);
-          alert(`Error updating field "${key}": ${err.message}`);
-        },
+  // Ažuriranje ESPB poena
+  updateESPB(updateData: { id: number; value: any }): void {
+    this.subjectService
+      .updateEspb(updateData.id, updateData.value)
+      .subscribe(() => {
+        alert('ESPB updated successfully!');
       });
-    } else {
-      console.warn('Updating other fields is not implemented yet.');
-    }
   }
 }

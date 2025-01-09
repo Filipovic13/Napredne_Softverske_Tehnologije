@@ -1,9 +1,9 @@
 <app-table
   [isEditable]="isEditable"
-  [columns]="columns"
+  [metaData]="metaData"
   [data]="subjects"
   [model]="model"
   (delete)="deleteSubject($event)"
-  (add)="addNewSubject($event)"
+  (add)="addNewSubject()"
   (update)="updateESPB($event)"
 ></app-table>

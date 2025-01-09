@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 @RequiredArgsConstructor
 public class DepartmnetServiceImpl implements DepartmentService {
@@ -30,6 +31,7 @@ public class DepartmnetServiceImpl implements DepartmentService {
     private final DepartmentConverter departmentConverter;
 
 
+    @Transactional
     @Override
     public DepartmentDTO save(DepartmentDTO dto) throws Exception {
 

@@ -2,6 +2,7 @@ package com.nst.domaci1.converter.impl;
 
 import com.nst.domaci1.converter.DtoEntityConverter;
 import com.nst.domaci1.domain.Department;
+import com.nst.domaci1.domain.Member;
 import com.nst.domaci1.dto.DepartmentDTO;
 import org.springframework.stereotype.Component;
 
@@ -13,8 +14,8 @@ public class DepartmentConverter implements DtoEntityConverter<DepartmentDTO, De
         return d == null ? null : new DepartmentDTO(
                 d.getName(),
                 d.getShortName(),
-                d.getSupervisor(),
-                d.getSecretary()
+                d.getSupervisor().getId(),
+                d.getSecretary().getId()
         );
     }
 
@@ -23,8 +24,8 @@ public class DepartmentConverter implements DtoEntityConverter<DepartmentDTO, De
         return dto == null ? null : new Department(
                 dto.getName(),
                 dto.getShortName(),
-                dto.getSupervisor(),
-                dto.getSecretary()
+                Member.builder().id(dto.getSupervisorId()).build(),
+                Member.builder().id(dto.getSecretaryId()).build()
         );
     }
 }

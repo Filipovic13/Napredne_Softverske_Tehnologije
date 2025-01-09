@@ -10,13 +10,13 @@
     <thead class="thead-light">
       <tr>
         <!-- Dinamičko prikazivanje kolona -->
-        <th *ngFor="let col of columns">{{ col.header }}</th>
+        <th *ngFor="let mData of metaData">{{ mData.label }}</th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let row of data">
-        <td *ngFor="let col of columns">
+        <td *ngFor="let col of metaData">
           <!-- Dinamičko prikazivanje vrednosti u tabeli -->
           <ng-container *ngIf="col.editable; else staticCell">
             <input
@@ -26,7 +26,9 @@
               [name]="col.key"
             />
           </ng-container>
-          <ng-template #staticCell>{{ row[col.key] }}</ng-template>
+          <ng-template #staticCell>{{
+            col.formatter ? col.formatter(row) : row[col.key]
+          }}</ng-template>
         </td>
         <td>
           <div class="table-buttons">
@@ -40,14 +42,14 @@
             </button>
             <!-- Dugme za update polja -->
             <button
+              *ngIf="isUpdatable"
               class="btn btn-secondary btn-sm"
               (click)="onUpdateField(row)"
-              [disabled]="isUpdatable"
             >
               Update field
             </button>
             <!-- Dugme za brisanje -->
-            <button class="btn btn-danger btn-sm" (click)="onDelete(row.id)">
+            <button class="btn btn-danger btn-sm" (click)="onDelete(row)">
               Delete
             </button>
           </div>

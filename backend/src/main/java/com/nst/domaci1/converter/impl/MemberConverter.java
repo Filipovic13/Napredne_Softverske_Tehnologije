@@ -17,7 +17,7 @@ public class MemberConverter implements DtoEntityConverter<MemberDTO, Member> {
                 member.getAcademicTitle() == null ? null :
                         member.getAcademicTitle().getAcademicTitleName(),
                 member.getEducationTitle() == null ? null :
-                        member.getEducationTitle().getEducationTitleCode(),
+                        member.getEducationTitle().getEducationTitleName(),
                 member.getScientificField() == null ? null :
                         member.getScientificField().getScientificFieldName(),
                 member.getDepartment() == null ? null :

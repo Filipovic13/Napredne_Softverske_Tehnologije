@@ -1,2 +1,8 @@
-<app-table [columns]="columns" [data]="departments" [isEditable]="isEditable">
+<app-table
+  [metaData]="metaData"
+  [data]="departments"
+  [isEditable]="isEditable"
+  (add)="addNewDepartment()"
+  (delete)="deleteDepartment($event)"
+>
 </app-table>

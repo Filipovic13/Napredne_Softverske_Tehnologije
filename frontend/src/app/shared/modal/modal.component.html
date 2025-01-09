@@ -1,18 +1,36 @@
-<h2 mat-dialog-title>Edit Data</h2>
+<h2 mat-dialog-title>{{ isEdit ? "Edit" : "Add New" }} Data</h2>
 <div mat-dialog-content>
-  <form>
-    <div *ngFor="let key of objectKeys(data)" class="form-group">
-      <label [for]="key">{{ key | titlecase }}</label>
-      <input
-        id="{{ key }}"
-        class="form-control"
-        [(ngModel)]="data[key]"
-        name="{{ key }}"
-        type="text"
-      />
+  <form [formGroup]="form">
+    <div *ngFor="let mData of metaData" class="form-group">
+      <label [for]="mData.label">{{ mData.label | titlecase }}</label>
+
+      <!-- Dinamičko generisanje inputa ili dropdown-a -->
+      <ng-container
+        *ngIf="mData.inputType === 'text' || mData.inputType === 'number'"
+      >
+        <input
+          id="{{ mData.key }}"
+          class="form-control"
+          formControlName="{{ mData.key }}"
+          [type]="mData.inputType"
+        />
+      </ng-container>
+
+      <ng-container *ngIf="mData.inputType === 'dropdown'">
+        <select
+          id="{{ mData.key }}"
+          class="form-control"
+          formControlName="{{ mData.key }}"
+        >
+          <option *ngFor="let option of mData.options" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </ng-container>
     </div>
   </form>
 </div>
+
 <div mat-dialog-actions>
   <button mat-button (click)="onClose()">Cancel</button>
   <button mat-button color="primary" (click)="onSave()">Save</button>

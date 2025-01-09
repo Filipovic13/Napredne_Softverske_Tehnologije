@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-modal',
@@ -9,8 +9,9 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 })
 export class ModalComponent {
   form: FormGroup; // Forma koja se koristi za unos podataka
-  isEdit: boolean = false;
-  data: any;
+  isEdit: boolean = false; // Da li je modal za editovanje ili dodavanje
+  metaData: any[]; // Kolone za dinamičko generisanje forme
+  data: any; // Podaci koji dolaze iz roditeljskog komponente
 
   constructor(
     public dialogRef: MatDialogRef<ModalComponent>,
@@ -18,21 +19,24 @@ export class ModalComponent {
     private fb: FormBuilder
   ) {
     this.isEdit = passedData.isEdit;
+    this.metaData = passedData.columns;
+    this.data = passedData.data || {}; // Ako nemamo podatke, postavljamo praznu vrednost
     this.form = this.fb.group({});
+    this.buildForm();
+  }
 
-    // Ako je za editovanje, popunimo formu sa postojećim podacima
-    if (this.isEdit) {
-      this.data = passedData.passedData;
-      for (let key in this.data) {
-        this.form.addControl(key, this.fb.control(this.data[key])); // Dodavanje kontrola u formu
+  // Metoda za generisanje forme na osnovu kolona
+  buildForm(): void {
+    this.metaData.forEach((field) => {
+      const validators = [];
+      if (field.required) {
+        validators.push(Validators.required);
       }
-    } else {
-      this.data = passedData.passedData;
-      // Ako je za dodavanje novog entiteta, kreiramo prazna polja za sve atribute
-      for (let key in this.data) {
-        this.form.addControl(key, this.fb.control('')); // Dodavanje praznih kontrola
-      }
-    }
+
+      // Dinamički kreiramo kontrolu u formi
+      const control = this.fb.control(this.data[field.key] || '', validators);
+      this.form.addControl(field.key, control);
+    });
   }
 
   // Zatvori modal bez promene
@@ -45,10 +49,5 @@ export class ModalComponent {
     if (this.form.valid) {
       this.dialogRef.close(this.form.value); // Zatvori modal i pošaljemo podatke roditelju
     }
-  }
-
-  // Pomoćna metoda za dobijanje ključeva objekta (polja forme)
-  objectKeys(obj: any): string[] {
-    return Object.keys(obj); // Vraća sve ključeve objekta (atribute)
   }
 }

@@ -20,11 +20,9 @@ public class DepartmentDTO implements Serializable {
 
     private String shortName;
 
-    @Schema(nullable = true)
-    private Member supervisor;
+    private Long supervisorId;
 
-    @Schema(nullable = true)
-    private Member secretary;
+    private Long secretaryId;
 
 
 }
